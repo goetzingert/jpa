@@ -1,0 +1,25 @@
+### JPA Übung: Datenbank-Konfiguration
+
+In dieser Übung lernst du, wie die Verbindung zur Datenbank in einer JPA-Anwendung konfiguriert wird.
+
+#### Aufgabenstellung:
+
+1. **Konfiguration der `persistence.xml`:**
+   - Öffne die Datei `src/META-INF/persistence.xml`.
+   - Füge den `<provider>` für Hibernate hinzu: `org.hibernate.jpa.HibernatePersistenceProvider`.
+   - Konfiguriere die folgenden JDBC-Eigenschaften für eine Derby-Datenbank:
+     - `jakarta.persistence.jdbc.url`: `jdbc:derby://localhost:1527/rentacar;create=true`
+     - `jakarta.persistence.jdbc.user`: `APP`
+     - `jakarta.persistence.jdbc.password`: `APP`
+     - `jakarta.persistence.jdbc.driver`: `org.apache.derby.jdbc.ClientDriver`
+   - Setze die Hibernate-spezifischen Properties:
+     - `hibernate.dialect`: `org.hibernate.dialect.DerbyDialect`
+     - `hibernate.hbm2ddl.auto`: `create-drop`
+ - `hibernate.show_sql`: `true` (optional, zur Fehlersuche hilfreich)
+
+2. **Verbindung testen:**
+   - Führe den Unit-Test `TestConnection` aus.
+   - Der Test ist erfolgreich, wenn die `EntityManagerFactory` korrekt erstellt werden kann und der `EntityManager` geöffnet ist.
+
+#### Erfolgskriterium:
+Die Übung ist erfolgreich abgeschlossen, wenn der Unit-Test `TestConnection` grün (erfolgreich) durchläuft.

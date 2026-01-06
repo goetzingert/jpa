@@ -1,0 +1,21 @@
+### JPA Übung: Erste Entity mappen
+
+In dieser Übung lernst du, wie eine einfache Java-Klasse als JPA-Entity gemappt wird, damit sie in einer relationalen Datenbank gespeichert werden kann.
+
+#### Aufgabenstellung:
+
+1. **Entity-Mapping in `VehicleType.java`:**
+   - Markiere die Klasse `VehicleType` als JPA-Entity mit der Annotation `@Entity`.
+   - Definiere das Feld `id` als Primärschlüssel mit `@Id`.
+   - Konfiguriere eine automatische ID-Generierung für das Feld `id` mit `@GeneratedValue(strategy = GenerationType.AUTO)`.
+   - Stelle sicher, dass ein parameterloser Standard-Konstruktor vorhanden ist (vom JPA-Provider benötigt).
+
+2. **Persistence-Konfiguration:**
+   - Die `persistence.xml` ist bereits so konfiguriert, dass Hibernate die Tabellen automatisch erstellt und löscht (`hibernate.hbm2ddl.auto` = `create-drop`).
+
+3. **Test-Ergänzung in `TestConnection.java`:**
+   - Ergänze den Unit-Test `testFind()`, um sicherzustellen, dass ein zuvor gespeichertes Objekt über den `EntityManager` anhand seiner ID wiedergefunden werden kann.
+   - Nutze `manager.find(VehicleType.class, id)`.
+
+#### Erfolgskriterium:
+Die Übung ist erfolgreich abgeschlossen, wenn der Unit-Test `TestConnection` grün (erfolgreich) durchläuft.

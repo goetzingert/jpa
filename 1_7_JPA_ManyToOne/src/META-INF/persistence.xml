@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+	<persistence-unit name="projectUnit"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>net.rentacar.model.VehicleType</class>
+		<class>net.rentacar.model.Shop</class>
+		<class>net.rentacar.model.User</class>
+		<class>net.rentacar.model.Person</class>
+		<class>net.rentacar.model.Vehicle</class>
+		<!--<!--<!--<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
+			<property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver" />
+			<property name="eclipselink.target-database" value="Oracle" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@172.19.240.170:1521:intern" />
+			<property name="jakarta.persistence.jdbc.user" value="goetzinger" />
+			<property name="jakarta.persistence.jdbc.password" value="password123" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
+		</properties>-->
+		<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
+			<property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
+			<property name="eclipselink.target-database" value="Mysql" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:mariadb://172.19.240.20:3306" />
+			<property name="jakarta.persistence.jdbc.user" value="MARIADB_USER" />
+			<property name="jakarta.persistence.jdbc.password" value="MARIADB_PWD" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB53Dialect" />
+		</properties>-->
+		<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
+			<property name="jakarta.persistence.jdbc.driver" value=" com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+			<property name="eclipselink.target-database" value="Sqlserver" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://172.19.240.171:1433" />
+			<property name="jakarta.persistence.jdbc.user" value="sa" />
+			<property name="jakarta.persistence.jdbc.password" value="MARIADB_PWD" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2016Dialect" />
+		</properties>-->
+		<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
+			<property name="jakarta.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver" />
+			<property name="eclipselink.target-database" value="Derby" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:derby://localhost:1527/rentacar;create=true" />
+			<property name="jakarta.persistence.jdbc.user" value="APP" />
+			<property name="jakarta.persistence.jdbc.password" value="a" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect" />
+		</properties>
+	</persistence-unit>
+</persistence>
+
+
+
+
+
+
+
+

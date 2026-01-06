@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_26" class="java.beans.XMLDecoder"> 
+ <object class="net.rentacar.model.Truck">
+  <void property="maxKph"> 
+   <long>200</long> 
+  </void> 
+  <void property="maxLoad"> 
+   <int>10000</int> 
+  </void> 
+  <void property="model"> 
+   <object class="net.rentacar.model.Model">
+    <void property="brand"> 
+     <string>VW</string> 
+    </void> 
+    <void property="modell"> 
+     <string>Golf</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void property="HP"> 
+   <long>120</long> 
+  </void> 
+ </object> 
+</java> 
