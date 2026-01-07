@@ -16,7 +16,6 @@
 	</properties>
 
 	<modules>
-		<module>0_1_FuhrparkCommon</module>
 		<module>1_0_Basic_Project</module>
 		<module>1_1_JPA_DB_CONFIG</module>
 		<module>1_1_JPA_DB_CONFIG_Loesung</module>

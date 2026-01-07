@@ -7,7 +7,9 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<class>net.rentacar.model.VehicleType</class>
 		<class>net.rentacar.model.User</class>
-		<!--<!--<!--<properties>
+
+		<!--
+		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
 			<property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver" />
 			<property name="eclipselink.target-database" value="Oracle" />
@@ -16,7 +18,7 @@
 			<property name="jakarta.persistence.jdbc.password" value="password123" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
-		</properties>-->
+		</properties>
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
 			<property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
@@ -26,7 +28,7 @@
 			<property name="jakarta.persistence.jdbc.password" value="MARIADB_PWD" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB53Dialect" />
-		</properties>-->
+		</properties>
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
 			<property name="jakarta.persistence.jdbc.driver" value=" com.microsoft.sqlserver.jdbc.SQLServerDriver" />
@@ -36,7 +38,8 @@
 			<property name="jakarta.persistence.jdbc.password" value="MARIADB_PWD" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2016Dialect" />
-		</properties>-->
+		</properties>
+		-->
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
 			<property name="jakarta.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver" />

@@ -4,7 +4,9 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
 	<persistence-unit name="projectUnit" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-		<!--<!--<!--<properties>
+
+		<!--
+		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
 			<property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver" />
 			<property name="eclipselink.target-database" value="Oracle" />
@@ -15,7 +17,7 @@
 			<property name="hibernate.show_sql" value="true"/>
 			<property name="hibernate.format_sql" value="true"/>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect" />
-		</properties>-->
+		</properties>
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
 			<property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
@@ -25,7 +27,7 @@
 			<property name="jakarta.persistence.jdbc.password" value="MARIADB_PWD" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB53Dialect" />
-		</properties>-->
+		</properties>
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
 			<property name="jakarta.persistence.jdbc.driver" value=" com.microsoft.sqlserver.jdbc.SQLServerDriver" />
@@ -35,7 +37,8 @@
 			<property name="jakarta.persistence.jdbc.password" value="MARIADB_PWD" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2016Dialect" />
-		</properties>-->
+		</properties>
+		-->
 		<properties>
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
 			<property name="jakarta.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver" />

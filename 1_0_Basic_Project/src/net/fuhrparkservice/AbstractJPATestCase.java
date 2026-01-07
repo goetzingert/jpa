@@ -42,7 +42,7 @@ public abstract class AbstractJPATestCase {
 	@AfterEach
 	public void transactionRollback(){
 		if(manager.getTransaction().isActive())
-			manager.getTransaction().commit();
+			manager.getTransaction().rollback();
 	}
 
 }
