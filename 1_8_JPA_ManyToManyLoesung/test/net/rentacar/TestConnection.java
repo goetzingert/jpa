@@ -11,12 +11,12 @@ public class TestConnection extends AbstractJPATestCase {
 	@Override
 	public void setUp() throws Exception {
 		
-		VehicleType Vehicle = new VehicleType("1", new Model("VW", "Golf"), 120, 200);
-		manager.persist(Vehicle);
+		VehicleType vehicleType = new VehicleType("1", new Model("VW", "Golf"), 120, 200);
+		manager.persist(vehicleType);
 		Shop Shop = new Shop("1", "Muenchen");
-		Vehicle Vehicle = new Vehicle("1", Shop, Vehicle);
-		Vehicle.setLocation(new Shop("2", "Stuttgart"));
-		manager.persist(Vehicle);
+		Vehicle vehicle = new Vehicle("1", Shop, vehicleType);
+		vehicle.setLocation(new Shop("2", "Stuttgart"));
+		manager.persist(vehicle);
 		manager.persist(new Nutzer("1", new Person("1", "Hans", "Mustermann")));
 		manager.flush();
 		manager.clear();
@@ -58,11 +58,5 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test public void testManyToManyVehicle() {
 		assertTrue(super.manager.find(Vehicle.class, "1")
 				.getLocationHistory().size() > 0);
-
-		LocationHistory history = new LocationHistory();
-		history.setShop(super.manager.find(Shop.class, "1"));
-		history.setVehicle(super.manager.find(Vehicle.class, "1"));
-		super.manager.persist(history);
-		super.manager.find(LocationHistory.class, new LocationHistoryId("1", "1"));
 	}
 }

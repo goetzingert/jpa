@@ -45,7 +45,7 @@ public class VehicleType {
 	}
 
 	public long getMaxKpH() {
-		return maxKph;
+		return maxKpH;
 	}
 
 	public void setMaxKpH(long maxKph) {

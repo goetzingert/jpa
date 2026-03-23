@@ -17,8 +17,8 @@ public class TestConnection extends AbstractJPATestCase {
 	@Override
 	public void setUp() throws Exception {
 		
-		VehicleType Vehicle = new VehicleType("VW", "Golf", 120, 200);
-		manager.persist(Vehicle);
+		VehicleType vehicle = new VehicleType("VW", "Golf", 120, 200);
+		manager.persist(vehicle);
 		
 		Person p = new Person();
 		p.setFirstname("A");
@@ -26,7 +26,7 @@ public class TestConnection extends AbstractJPATestCase {
 		
 		manager.persist(p);
 		
-		this.id = Vehicle.getId();
+		this.id = vehicle.getId();
 		Nutzer n = new Nutzer("a", "b");
 		manager.persist(n);
 		this.nutzerId = n.getId();

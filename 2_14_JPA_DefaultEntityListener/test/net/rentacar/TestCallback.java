@@ -1,6 +1,6 @@
 package net.rentacar;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -32,15 +32,15 @@ public class TestCallback extends AbstractJPATestCase {
 
 	@Test
 	public void testCallback() {
-		VehicleType Vehicle = new Truck("1", new Model("VW", "Golf"), 120, 200,
+		VehicleType vehicleType = new Truck("1", new Model("VW", "Golf"), 120, 200,
 				10000);
-		manager.persist(Vehicle);
+		manager.persist(vehicleType);
 		Shop Shop = new Shop("1", "Muenchen");
-		Vehicle Vehicle = new Vehicle("1", Shop, Vehicle);
-		Vehicle.setLocation(new Shop("2", "Stuttgart"));
-		manager.persist(Vehicle);
+		Vehicle vehicle = new Vehicle("1", Shop, vehicleType);
+		vehicle.setLocation(new Shop("2", "Stuttgart"));
+		manager.persist(vehicle);
 		manager.flush();
-		assertTrue(Vehicle.isCalled);
+		assertTrue(vehicleType.isCalled);
 		assertTrue(VehicleListener.gewonnen);
 		assertTrue(new java.io.File(DefaultListener.VERZEICHNIS
 				+ File.separatorChar + "Shop1." + DefaultListener.DATEIENDUNG)

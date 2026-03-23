@@ -67,8 +67,8 @@ public class Reservierung extends AbstractBusinessObject {
 		return vehicle;
 	}
 
-	public void setVehicle(Vehicle Vehicle) {
-		this.vehicle = Vehicle;
+	public void setVehicle(Vehicle vehicleVar) {
+		this.vehicle = vehicleVar;
 	}
 
 	public Calendar getStartZeit() {

@@ -11,17 +11,17 @@ public class TestConnection extends AbstractJPATestCase {
 
 	@Override
 	public void setUp() throws Exception {
-		VehicleType fahrezug = new VehicleType( "VW", "Golf", 120, 200);
-		manager.persist(fahrezug);
-		id = fahrezug.getId();
+		VehicleType vehicleType = new VehicleType( "VW", "Golf", 120, 200);
+		manager.persist(vehicleType);
+		id = vehicleType.getId();
 	}
 
 	@Test
 	public void testFind() {
 		//SELECT * from VehicleType where id= ...
-		VehicleType VehicleType = super.manager.find(VehicleType.class, id);
-		assertNotNull(VehicleType);
-		assertEquals(id, VehicleType.getId());
+		VehicleType vehicleType = super.manager.find(VehicleType.class, id);
+		assertNotNull(vehicleType);
+		assertEquals(id, vehicleType.getId());
 	}
 
 }

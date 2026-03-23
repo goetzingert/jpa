@@ -19,12 +19,12 @@ public class TestConnection extends AbstractJPATestCase {
 	@Override
 	public void setUp() throws Exception {
 		
-		VehicleType Vehicle = new Truck("1", new Model("VW", "Golf"), 120, 200,10000);
-		manager.persist(Vehicle);
+		VehicleType vehicleType = new Truck("1", new Model("VW", "Golf"), 120, 200,10000);
+		manager.persist(vehicleType);
 		Shop Shop = new Shop("1", "Muenchen");
-		Vehicle Vehicle = new Vehicle("1", Shop, Vehicle);
-		Vehicle.setLocation(new Shop("2", "Stuttgart"));
-		manager.persist(Vehicle);
+		Vehicle vehicle = new Vehicle("1", Shop, vehicleType);
+		vehicle.setLocation(new Shop("2", "Stuttgart"));
+		manager.persist(vehicle);
 		manager.persist(new Nutzer("1", new Person("1", "Hans", "Mustermann")));
 		manager.lock(Shop, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
 		manager.flush();

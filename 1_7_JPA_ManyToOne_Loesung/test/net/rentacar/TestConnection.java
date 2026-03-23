@@ -18,11 +18,11 @@ public class TestConnection extends AbstractJPATestCase {
 	@Override
 	public void setUp() throws Exception {
 		
-		VehicleType Vehicle = new VehicleType("1", new Model("VW", "Golf"), 120, 200);
-		manager.persist(Vehicle);
+		VehicleType vehicleType = new VehicleType("1", new Model("VW", "Golf"), 120, 200);
+		manager.persist(vehicleType);
 		Shop Shop = new Shop("1", "Muenchen");
-		Vehicle Vehicle = new Vehicle("1", Shop, Vehicle);
-		Shop.addVehicle(Vehicle);
+		Vehicle vehicle = new Vehicle("1", Shop, vehicleType);
+		Shop.addVehicle(vehicle);
 
 		//manager.persist(Vehicle);
 		manager.persist(Shop);
@@ -69,12 +69,12 @@ public class TestConnection extends AbstractJPATestCase {
 
 
 	@Test public void testManyToOneVehicleToType() {
-		final Vehicle Vehicle = super.manager.find(Vehicle.class, "1");
-		assertNotNull(Vehicle.getType());
+		final Vehicle vehicle = super.manager.find(Vehicle.class, "1");
+		assertNotNull(vehicle.getType());
 	}
 
 	@Test public void testManyToOneVehicle() {
-		final Vehicle Vehicle = super.manager.find(Vehicle.class, "1");
-		assertNotNull(Vehicle.getLocation());
+		final Vehicle vehicle = super.manager.find(Vehicle.class, "1");
+		assertNotNull(vehicle.getLocation());
 	}
 }

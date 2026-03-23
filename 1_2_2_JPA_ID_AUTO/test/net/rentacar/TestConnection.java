@@ -12,9 +12,9 @@ public class TestConnection extends AbstractJPATestCase {
 	@Override
 	public void setUp() throws Exception {
 		
-		VehicleType Vehicle = new VehicleType("VW","Golf",120,200);
-		manager.persist(Vehicle);
-		this.id = Vehicle.getId();
+		VehicleType vehicle = new VehicleType("VW","Golf",120,200);
+		manager.persist(vehicle);
+		this.id = vehicle.getId();
 		manager.flush();
 		manager.clear();
 	}

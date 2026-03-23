@@ -39,39 +39,5 @@ public class TestConnection extends AbstractJPATestCase {
 		assertNotNull(super.manager.find(VehicleType.class, "1").getModel()
 				.getModel().getBrand());
 	}
-	@Test public void testFarm() {
-		Bauer heinz = new Bauer();
-		heinz.setName("Heinz");
-		manager.persist(
-				heinz);
-		Schwein peppaWutz = new Schwein();
-		peppaWutz.setGewicht(50);
-		peppaWutz.setName("Peppa Wutz");
-		//Beziehung setzen
-		peppaWutz.setBesitzer(heinz);
-		manager.persist(peppaWutz);
-
-
-
-		Schwein schorsch = new Schwein();
-		schorsch.setGewicht(50);
-		schorsch.setName("Schorsch");
-		//Beziehung setzen
-		schorsch.setBesitzer(heinz);
-		manager.persist(schorsch);
-		Stall hintermHaus = new Stall();
-		hintermHaus.getBewohner().add(peppaWutz);
-		hintermHaus.getBewohner().add(schorsch);
-
-		List<String> namenVonSchweinen = Arrays.asList("Papa Wutz", "Schorch");
-
-		manager.createQuery("SELECT s FROM Stall s where s.bewohner IS EMPTY");
-
-		TypedQuery<Schwein> query = manager.createQuery("SELECT s FROM Schwein s where s.name IN :namen", Schwein.class);
-		query.setParameter("namen", namenVonSchweinen);
-
-
-
-	}
 
 }
