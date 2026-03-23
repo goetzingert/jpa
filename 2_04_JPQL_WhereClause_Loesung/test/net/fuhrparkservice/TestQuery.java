@@ -48,8 +48,8 @@ public class TestQuery extends AbstractJPATestCase {
 		assertEquals(
 				2,
 				manager.createQuery(
-						"SELECT n FROM User n WHERE n.person.firstName IN :FIRSTNAMEn")
-						.setParameter("FIRSTNAMEn", list).getResultList().size());
+						"SELECT n FROM User n WHERE n.person.firstName IN :FIRSTNAME", User.class)
+						.setParameter("FIRSTNAME", list).getResultList().size());
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class TestQuery extends AbstractJPATestCase {
 		assertEquals(
 				2,
 				manager.createQuery(
-						"SELECT f FROM Shop f WHERE f.carpool IS EMPTY")
+						"SELECT f FROM Shop f WHERE f.carpool IS EMPTY", Shop.class)
 						.getResultList().size());
 	}
 
@@ -67,7 +67,7 @@ public class TestQuery extends AbstractJPATestCase {
 		assertEquals(
 				1,
 				manager.createQuery(
-						"SELECT f FROM Shop f WHERE f.location NOT IN :orte")
+						"SELECT f FROM Shop f WHERE f.location NOT IN :orte", Shop.class)
 						.setParameter("orte", orte).getResultList().size());
 	}
 }

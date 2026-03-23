@@ -31,7 +31,7 @@ public class TestQuery extends AbstractJPATestCase {
 
 	@Test
 	public void testQueryForVehicleTypesMoreThen130HPWithParameter() {
-			assertEquals(1, manager.createQuery("SELECT f FROM VehicleType f WHERE f.hp >:hp")
+			assertEquals(1, manager.createQuery("SELECT f FROM VehicleType f WHERE f.hp >:hp", VehicleType.class)
 				.setParameter("hp", (long) 130).getResultList().size());
 	}
 }

@@ -41,7 +41,7 @@ public class TestQuery extends AbstractJPATestCase {
 
 
 	@Test public void testForVehicleItemInShop() {
-		Shop shop = (Shop) manager.createQuery("FROM Shop f WHERE f.location = 'Stuttgart'").getSingleResult();
+		Shop shop = manager.createQuery("FROM Shop f WHERE f.location = 'Stuttgart'", Shop.class).getSingleResult();
 		for (Vehicle item : shop.getCarpool()) {
 			System.out.println(item.getType().getModel().getBrand());
 		}

@@ -10,7 +10,7 @@ public class TestQuery extends AbstractJPATestCase {
 
 	private Vehicle vehicleItem;
 
-	public void setUp() throws Exception {
+	public void setUp()  {
 
 		VehicleType Vehicle = new Car(new Model("VW", "Golf"), 120, 200, 2);
 		manager.persist(Vehicle);
@@ -42,20 +42,20 @@ public class TestQuery extends AbstractJPATestCase {
 	public void testInnerJoin_SucheShopMitVehicleVombrandVW() {
 		assertEquals(
 				"Stuttgart",
-				((Shop) manager
+				manager
 						.createQuery(
-								"Select f FROM Shop f INNER JOIN f.carpool fz WHERE fz.type.model.brand = 'VW'")
-						.getSingleResult()).getLocation());
+								"Select f FROM Shop f INNER JOIN f.carpool fz WHERE fz.type.model.brand = 'VW'", Shop.class)
+						.getSingleResult().getLocation());
 	}
 
 	@Test
 	public void testIn_SucheShopMitVehicleVombrandVW() {
 		assertEquals(
 				"Stuttgart",
-				((Shop) manager
+				manager
 						.createQuery(
-								"Select f FROM Shop f, IN (f.carpool) fz WHERE fz.type.model.brand = 'VW'")
-						.getSingleResult()).getLocation());
+								"Select f FROM Shop f, IN (f.carpool) fz WHERE fz.type.model.brand = 'VW'", Shop.class)
+						.getSingleResult().getLocation());
 	}
 
 }

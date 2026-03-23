@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 
 import net.rentacar.model.*;
 
@@ -40,13 +40,13 @@ public class TestQuery extends AbstractJPATestCase {
 
 	@Test public void testPagingBySelectNutzer() {
 
-		Query createQuery = manager.createQuery("SELECT n FROM User n");
+		TypedQuery<User> createQuery = manager.createQuery("SELECT n FROM User n", User.class);
 		createQuery.setMaxResults(3);
 		boolean fertig = false;
 		while(!fertig){
 			int nextFirstResultIndex = incrementFirstResultWithResultCount(createQuery);
 			createQuery.setFirstResult(nextFirstResultIndex);
-			List resultList = createQuery.getResultList();
+			List<User> resultList = createQuery.getResultList();
 			fertig = resultList.isEmpty();
 		}
 		assertEquals(2,createQuery.setFirstResult(5).setMaxResults(3)
@@ -55,7 +55,7 @@ public class TestQuery extends AbstractJPATestCase {
 
 
 
-	private int incrementFirstResultWithResultCount(Query createQuery) {
+	private int incrementFirstResultWithResultCount(TypedQuery<User> createQuery) {
 		return createQuery.getFirstResult() + createQuery.getMaxResults();
 	}
 }

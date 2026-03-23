@@ -44,7 +44,7 @@ public class TestQuery extends AbstractJPATestCase {
 				.createQuery(
 						"Select new "
 								+ VehicleDTO.class.getName()
-								+ "(f.model.modell,f.maxKpH) FROM VehicleType f")
+								+ "(f.model.modell,f.maxKpH) FROM VehicleType f", VehicleDTO.class)
 				.getResultList().get(0) instanceof VehicleDTO);
 	}
 }

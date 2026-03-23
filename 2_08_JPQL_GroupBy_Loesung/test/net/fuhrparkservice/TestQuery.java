@@ -69,19 +69,19 @@ public class TestQuery extends AbstractJPATestCase {
 
 	@Test
 	public void testGroupBy() {
-		List resultList = manager
+		List<Object[]> resultList = manager
 				.createQuery(
-						"Select res.Vehicle.type.model.modell, count(res) FROM Customer k, IN (k.reservations) res GROUP BY res.Vehicle.type.model.modell")
+						"Select res.vehicle.type.model.modell, count(res) FROM Customer k, IN (k.reservations) res GROUP BY res.vehicle.type.model.modell", Object[].class)
 				.getResultList();
-		Object[] result = (Object[]) resultList.get(0);
+		Object[] result = resultList.get(0);
 		assertEquals(2, resultList.size());
 	}
 
 	@Test
 	public void testGroupByAndHaving() {
-		List resultList = manager
+		List<Object[]> resultList = manager
 				.createQuery(
-						"Select res.Vehicle.type.model.modell, count(res) FROM Customer k, IN (k.reservations) res GROUP BY res.Vehicle.type.model.modell HAVING count (res) > 2")
+						"Select res.vehicle.type.model.modell, count(res) FROM Customer k, IN (k.reservations) res GROUP BY res.vehicle.type.model.modell HAVING count (res) > 2", Object[].class)
 				.getResultList();
 		assertEquals(1, resultList.size());
 	}
