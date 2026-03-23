@@ -37,11 +37,11 @@ public class Reservation extends AbstractBusinessObject {
 	public Reservation() {
 	}
 
-	public Reservation(Vehicle vehicleItem, Shop startShop,
+	public Reservation(Vehicle vehicle, Shop startShop,
 					   Shop returnShop, GregorianCalendar start,
 					   GregorianCalendar ende, float price) {
 		super();
-		setVehicle(vehicleItem);
+		setVehicle(vehicle);
 		setStartShop(startShop);
 		setReturnShop(returnShop);
 		setStartTime(start);

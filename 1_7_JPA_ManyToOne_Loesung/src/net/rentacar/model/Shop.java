@@ -54,10 +54,10 @@ public class Shop {
 		return this.id;
 	}
 
-	public void addVehicle(Vehicle VehicleItem) {
-		Vehicles.add(VehicleItem);
-		if (!this.equals(VehicleItem.getLocation()))
-			VehicleItem.setLocation(this);
+	public void addVehicle(Vehicle vehicle) {
+		vehicles.add(vehicle);
+		if (!this.equals(vehicle.getLocation()))
+			vehicle.setLocation(this);
 	}
 
 }
