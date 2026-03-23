@@ -6,9 +6,10 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<class>net.rentacar.model.VehicleType</class>
 		<class>net.rentacar.model.Shop</class>
-		<class>net.rentacar.model.User</class>
+		<class>net.rentacar.model.Nutzer</class>
 		<class>net.rentacar.model.Person</class>
 		<class>net.rentacar.model.Vehicle</class>
+		<class>net.rentacar.model.Truck</class>
 
 		<!--
 		<properties>

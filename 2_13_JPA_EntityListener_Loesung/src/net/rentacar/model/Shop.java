@@ -15,7 +15,7 @@ public class Shop extends AbstractBusinessObject{
 	@Column(nullable = false, length = 100)
 	private String location;
 	@OneToMany(mappedBy="location")
-	private Set<VehicleItem> Vehicles = new HashSet<VehicleItem>();
+	private Set<Vehicle> vehicles = new HashSet<Vehicle>();
 
 	public Shop() {
 	}
@@ -33,11 +33,11 @@ public class Shop extends AbstractBusinessObject{
 		this.location = location;
 	}
 
-	public Set<VehicleItem> getVehicles() {
+	public Set<Vehicle> getVehicles() {
 		return vehicles;
 	}
 
-	public void setVehicles(Set<VehicleItem> Vehicles) {
+	public void setVehicles(Set<Vehicle> Vehicles) {
 		this.vehicles = Vehicles;
 	}
 

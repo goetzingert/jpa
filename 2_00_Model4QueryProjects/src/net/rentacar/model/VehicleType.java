@@ -34,11 +34,11 @@ public class VehicleType extends AbstractBusinessObject {
 	}
 
 	public void setHp(long hp) {
-		this.hp = HP;
+		this.hp = hp;
 	}
 
 	public long getMaxKpH() {
-		return maxKph;
+		return maxKpH;
 	}
 
 	public void setMaxKpH(long maxKph) {

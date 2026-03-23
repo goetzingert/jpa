@@ -17,7 +17,7 @@ import jakarta.persistence.TemporalType;
 public class Reservierung extends AbstractBusinessObject {
 
 	@ManyToOne(optional = false)
-	private VehicleItem Vehicle;
+	private Vehicle vehicle;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar startZeit;
 	@Temporal(TemporalType.TIMESTAMP)
@@ -31,11 +31,11 @@ public class Reservierung extends AbstractBusinessObject {
 	public Reservierung() {
 	}
 
-	public Reservierung(String id, VehicleItem VehicleItem,
+	public Reservierung(String id, Vehicle vehicle,
 			Shop startShop, Shop rueckgabeShop,
 			GregorianCalendar start, GregorianCalendar ende, float preis) {
 		super(id);
-		setVehicle(VehicleItem);
+		setVehicle(vehicle);
 		setStartShop(startShop);
 		setRueckgabeShop(rueckgabeShop);
 		setStartZeit(start);
@@ -43,11 +43,11 @@ public class Reservierung extends AbstractBusinessObject {
 		setPreis(preis);
 	}
 
-	public Reservierung(VehicleItem VehicleItem, Shop startShop,
+	public Reservierung(Vehicle vehicle, Shop startShop,
 			Shop rueckgabeShop, GregorianCalendar start,
 			GregorianCalendar ende, float preis) {
 		super();
-		setVehicle(VehicleItem);
+		setVehicle(vehicle);
 		setStartShop(startShop);
 		setRueckgabeShop(rueckgabeShop);
 		setStartZeit(start);
@@ -63,12 +63,12 @@ public class Reservierung extends AbstractBusinessObject {
 		this.preis = preis;
 	}
 
-	public VehicleItem getVehicle() {
-		return Vehicle;
+	public Vehicle getVehicle() {
+		return vehicle;
 	}
 
-	public void setVehicle(VehicleItem Vehicle) {
-		this.Vehicle = Vehicle;
+	public void setVehicle(Vehicle Vehicle) {
+		this.vehicle = Vehicle;
 	}
 
 	public Calendar getStartZeit() {

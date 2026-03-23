@@ -41,7 +41,7 @@ public class VehicleType {
 	}
 
 	public void setHp(long hp) {
-		this.hp = HP;
+		this.hp = hp;
 	}
 
 	public long getMaxKpH() {

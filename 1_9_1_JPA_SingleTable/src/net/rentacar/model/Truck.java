@@ -1,5 +1,8 @@
 package net.rentacar.model;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Truck extends VehicleType {
 
 	private int maxLoad;

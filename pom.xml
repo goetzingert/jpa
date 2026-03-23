@@ -79,5 +79,7 @@
 		<module>2_13_JPA_EntityListener_Loesung</module>
 		<module>2_14_JPA_DefaultEntityListener</module>
 		<module>2_14_JPA_DefaultEntityListener_Loesung</module>
+		<module>2_15_CriteriaAPI_Simple</module>
+		<module>2_15_CriteriaAPI_Simple_Loesung</module>
 	</modules>
 </project>

@@ -10,7 +10,7 @@
 		<class>net.rentacar.model.Shop</class>
 		<class>net.rentacar.model.User</class>
 		<class>net.rentacar.model.Person</class>
-		<class>net.rentacar.model.VehicleItem</class>
+		<class>net.rentacar.model.Vehicle</class>
 		<class>net.rentacar.model.Truck</class>
 		<class>net.rentacar.model.Car</class>
 
