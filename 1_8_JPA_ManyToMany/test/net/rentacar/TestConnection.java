@@ -12,19 +12,19 @@ import org.junit.jupiter.api.Test;
 
 public class TestConnection extends AbstractJPATestCase {
 
-	private VehicleType Vehicle;
+	private VehicleType vehicleType;
 	private Shop Shop;
-	private Vehicle Vehicle;
+	private Vehicle vehicle;
 	private Nutzer nutzer;
 
 	@Override
 	public void setUp() throws Exception {
 
-		Vehicle = new VehicleType(new Model("VW", "Golf"), 120, 200);
-		manager.persist(Vehicle);
+		vehicleType= new VehicleType(new Model("VW", "Golf"), 120, 200);
+		manager.persist(vehicleType);
 		Shop = new Shop("Muenchen");
-		Vehicle = new Vehicle(Shop, Vehicle);
-		manager.persist(Vehicle);
+		vehicle = new Vehicle(Shop, vehicleType);
+		manager.persist(vehicle);
 		nutzer = new Nutzer(new Person("Hans", "Mustermann"));
 		manager.persist(nutzer);
 		manager.flush();
@@ -33,7 +33,7 @@ public class TestConnection extends AbstractJPATestCase {
 
 	@Test
 	public void testFindVehicle() {
-		assertNotNull(super.manager.find(VehicleType.class, Vehicle.getId())
+		assertNotNull(super.manager.find(VehicleType.class, vehicle.getId())
 				.getId());
 	}
 
@@ -52,7 +52,7 @@ public class TestConnection extends AbstractJPATestCase {
 
 	@Test
 	public void testFindModel() {
-		assertNotNull(super.manager.find(VehicleType.class, Vehicle.getId())
+		assertNotNull(super.manager.find(VehicleType.class, vehicle.getId())
 				.getModel().getBrand());
 	}
 
@@ -70,7 +70,7 @@ public class TestConnection extends AbstractJPATestCase {
 
 	@Test
 	public void testManyToOneVehicle() {
-		assertNotNull(super.manager.find(Vehicle.class, Vehicle.getId())
+		assertNotNull(super.manager.find(Vehicle.class, vehicle.getId())
 				.getLocation());
 	}
 }
