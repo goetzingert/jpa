@@ -7,15 +7,23 @@ In dieser Übung lernst du, wie die Verbindung zur Datenbank in einer JPA-Anwend
 1. **Konfiguration der `persistence.xml`:**
    - Öffne die Datei `src/META-INF/persistence.xml`.
    - Füge den `<provider>` für Hibernate hinzu: `org.hibernate.jpa.HibernatePersistenceProvider`.
+     Als alternative Provider-Variante steht EclipseLink zur Verfügung; siehe
+     `src/META-INF/persistence-eclipselink.xml`.
    - Konfiguriere die folgenden JDBC-Eigenschaften für eine Derby-Datenbank:
      - `jakarta.persistence.jdbc.url`: `jdbc:derby://localhost:1527/rentacar;create=true`
      - `jakarta.persistence.jdbc.user`: `APP`
      - `jakarta.persistence.jdbc.password`: `APP`
      - `jakarta.persistence.jdbc.driver`: `org.apache.derby.jdbc.ClientDriver`
-   - Setze die Hibernate-spezifischen Properties:
+   - Setze die standardisierte JPA-Schema-Property:
+     - `jakarta.persistence.schema-generation.database.action`: `drop-and-create`
+   - Ergänze optional für Hibernate:
      - `hibernate.dialect`: `org.hibernate.dialect.DerbyDialect`
-     - `hibernate.hbm2ddl.auto`: `create-drop`
- - `hibernate.show_sql`: `true` (optional, zur Fehlersuche hilfreich)
+     - `hibernate.show_sql`: `true` (zur Fehlersuche hilfreich)
+
+   Für die EclipseLink-Variante verwendest du das Maven-Profil `eclipselink` und
+   die entsprechende Referenzdatei. Die Datei muss dafür in `persistence.xml`
+   umbenannt werden. Hibernate- und EclipseLink-Properties dürfen nicht gemischt
+   werden.
 
 2. **Verbindung testen:**
    - Führe den Unit-Test `TestConnection` aus.

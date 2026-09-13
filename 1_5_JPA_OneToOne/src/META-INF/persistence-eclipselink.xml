@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0"
+	xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+	<persistence-unit name="projectUnit"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>net.rentacar.model.VehicleType</class>
+		<class>net.rentacar.model.Shop</class>
+		<class>net.rentacar.model.User</class>
+
+		<!--
+		<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
+			<property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver" />
+			<property name="eclipselink.target-database" value="Oracle" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@172.19.240.170:1521:intern" />
+			<property name="jakarta.persistence.jdbc.user" value="goetzinger" />
+			<property name="jakarta.persistence.jdbc.password" value="password123" />
+		</properties>
+		<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
+			<property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
+			<property name="eclipselink.target-database" value="Mysql" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:mariadb://172.19.240.20:3306" />
+			<property name="jakarta.persistence.jdbc.user" value="MARIADB_USER" />
+			<property name="jakarta.persistence.jdbc.password" value="MARIADB_PWD" />
+		</properties>
+		<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
+			<property name="jakarta.persistence.jdbc.driver" value=" com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+			<property name="eclipselink.target-database" value="Sqlserver" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://172.19.240.171:1433" />
+			<property name="jakarta.persistence.jdbc.user" value="sa" />
+			<property name="jakarta.persistence.jdbc.password" value="MARIADB_PWD" />
+		</properties>
+		-->
+		<properties>
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /><property name="eclipselink.ddl-generation.output-mode" value="database" />
+			<property name="jakarta.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver" />
+			<property name="eclipselink.target-database" value="Derby" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:derby://localhost:1527/rentacar;create=true" />
+			<property name="jakarta.persistence.jdbc.user" value="APP" />
+			<property name="jakarta.persistence.jdbc.password" value="a" />
+					<property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+		</properties>
+	</persistence-unit>
+</persistence>
+
+
+
+
+
+
+
+
