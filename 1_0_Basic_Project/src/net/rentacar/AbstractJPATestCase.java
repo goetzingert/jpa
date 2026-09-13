@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -41,6 +42,14 @@ public abstract class AbstractJPATestCase {
 	public void transactionRollback(){
 		if(manager.getTransaction().isActive())
 			manager.getTransaction().rollback();
+		if(manager.isOpen())
+			manager.close();
+	}
+
+	@AfterAll
+	public static void tearDownEMFactory(){
+		if(managerFactory != null && managerFactory.isOpen())
+			managerFactory.close();
 	}
 
 }

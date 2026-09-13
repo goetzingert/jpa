@@ -8,8 +8,6 @@ import jakarta.persistence.Query;
 
 import net.rentacar.model.VehicleType;
 
-import org.hibernate.Session;
-import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.Test;
 
 public class TestConnection extends AbstractJPATestCase {
@@ -31,17 +29,9 @@ public class TestConnection extends AbstractJPATestCase {
 		manager.getTransaction().begin();
 		super.manager.find(VehicleType.class, "1");
 		Query createQuery = super.manager.createQuery("Select f FROM VehicleType f WHERE f.id = '1'");
-		createQuery.setHint("org.hibernate.cacheable", true);
-		createQuery.setHint("org.hibernate.cacheMode", "NORMAL");
 		assertNotNull(createQuery.getResultList());
 		manager.persist(new VehicleType(UUID.randomUUID().toString(), "ad", "dfdf", 100, 200));
 		assertNotNull(createQuery.getResultList());
-		Session unwrap = manager.unwrap(Session.class);
-		Statistics statistics = unwrap.getSessionFactory().getStatistics();
-		long secondLevelCacheHitCount = statistics.getSecondLevelCacheHitCount();
-		System.out.println(secondLevelCacheHitCount);
-		long queryCacheHitCount = statistics.getQueryCacheHitCount();
-		System.out.println(queryCacheHitCount);
 	}
 	
 	
