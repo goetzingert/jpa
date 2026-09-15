@@ -6,7 +6,7 @@
 
 	<entity class="net.rentacar.model.Shop">
 		<attributes>
-			<one-to-many name="Vehicles">
+			<one-to-many name="vehicles">
 			</one-to-many>
 		</attributes>
 	</entity>

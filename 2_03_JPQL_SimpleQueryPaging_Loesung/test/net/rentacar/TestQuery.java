@@ -38,7 +38,7 @@ public class TestQuery extends AbstractJPATestCase {
 
 
 
-	@Test public void testPagingBySelectNutzer() {
+	@Test public void testPagingBySelectUser() {
 
 		TypedQuery<User> createQuery = manager.createQuery("SELECT n FROM User n", User.class);
 		createQuery.setMaxResults(3);

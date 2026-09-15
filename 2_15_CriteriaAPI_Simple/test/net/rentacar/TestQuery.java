@@ -38,7 +38,7 @@ public class TestQuery extends AbstractJPATestCase {
 	}
 
 	@Test
-	public void testQueryForNutzerWithPersonnameISMichaelOrMathias() {
+	public void testQueryForUserWithPersonnameISMichaelOrMathias() {
 
 	}
 

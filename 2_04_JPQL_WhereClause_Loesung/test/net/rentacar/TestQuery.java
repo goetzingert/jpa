@@ -43,7 +43,7 @@ public class TestQuery extends AbstractJPATestCase {
 	}
 
 	@Test
-	public void testQueryForNutzerWithPersonnameISMichaelOrMathias() {
+	public void testQueryForUserWithPersonnameISMichaelOrMathias() {
 		List<String> list = Arrays.asList("Michael","Mathias");
 		assertEquals(
 				2,

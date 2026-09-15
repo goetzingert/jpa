@@ -14,7 +14,7 @@ import jakarta.persistence.IdClass;
  * 
  */
 @Entity
-@IdClass(Nutzer.class)
+@IdClass(User.class)
 public class Kunde {
 
 	private String kundennummer;

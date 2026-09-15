@@ -9,7 +9,7 @@ import net.rentacar.model.VehicleType;
 import net.rentacar.model.Vehicle;
 import net.rentacar.model.Shop;
 import net.rentacar.model.Model;
-import net.rentacar.model.Nutzer;
+import net.rentacar.model.User;
 import net.rentacar.model.Person;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ public class TestConnection extends AbstractJPATestCase {
 
 	private VehicleType Vehicle;
 	private Vehicle Vehicle2;
-	private Nutzer nutzer;
+	private User user;
 	private Shop Shop;
 
 	@Override
@@ -32,8 +32,8 @@ public class TestConnection extends AbstractJPATestCase {
 		Vehicles.add(Vehicle2);
 		Shop.setVehicles(Vehicles);
 		manager.persist(Shop);
-		nutzer = new Nutzer( new Person("Hans", "Mustermann"));
-		manager.persist(nutzer);
+		user = new User( new Person("Hans", "Mustermann"));
+		manager.persist(user);
 		manager.flush();
 		manager.clear();
 
@@ -43,9 +43,9 @@ public class TestConnection extends AbstractJPATestCase {
 		assertNotNull(super.manager.find(VehicleType.class, Vehicle.getId()).getId());
 	}
 
-	@Test public void testFindNutzer() {
-		// TODO find Nutzer with EntityManager
-		assertNotNull(super.manager.find(Nutzer.class, nutzer.getId() ).getId());
+	@Test public void testFindUser() {
+		// TODO find User with EntityManager
+		assertNotNull(super.manager.find(User.class, user.getId() ).getId());
 	}
 
 	@Test public void testFindShop() {
@@ -58,8 +58,8 @@ public class TestConnection extends AbstractJPATestCase {
 				.getBrand());
 	}
 
-	@Test public void testFindPersonByNutzer() {
-		assertNotNull(super.manager.find(Nutzer.class,nutzer.getId()).getPerson()
+	@Test public void testFindPersonByUser() {
+		assertNotNull(super.manager.find(User.class,user.getId()).getPerson()
 				.getFirstName());
 	}
 

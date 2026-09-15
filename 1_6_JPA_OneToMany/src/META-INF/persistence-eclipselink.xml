@@ -6,6 +6,7 @@
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<class>net.rentacar.model.VehicleType</class>
+		<class>net.rentacar.model.Vehicle</class>
 		<class>net.rentacar.model.Shop</class>
 		<class>net.rentacar.model.User</class>
 		<class>net.rentacar.model.Person</class>

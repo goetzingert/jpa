@@ -6,11 +6,11 @@ Tabellen-basierte ID-Generierung mit `@TableGenerator` und `GenerationType.TABLE
 
 ## Ausgangszustand
 
-In `src/net/rentacar/model/VehicleType.java` und `src/net/rentacar/model/Nutzer.java` fehlen die Primärschlüssel-Annotationen und Generatordefinitionen. Der Test `test/net/rentacar/TestConnection.java` kann beide Entitäten nicht speichern.
+In `src/net/rentacar/model/VehicleType.java` und `src/net/rentacar/model/User.java` fehlen die Primärschlüssel-Annotationen und Generatordefinitionen. Der Test `test/net/rentacar/TestConnection.java` kann beide Entitäten nicht speichern.
 
 ## Aufgabe
 
-Bearbeite `VehicleType.java` und `Nutzer.java`:
+Bearbeite `VehicleType.java` und `User.java`:
 
 1. **TableGenerator für `VehicleType` definieren:**
    - Name: `MY_GEN1`
@@ -21,11 +21,11 @@ Bearbeite `VehicleType.java` und `Nutzer.java`:
    - `allocationSize`: `10`
    - ID-Annotation: `@GeneratedValue(strategy = GenerationType.TABLE, generator = "MY_GEN1")`
 
-2. **TableGenerator für `Nutzer` definieren:**
+2. **TableGenerator für `User` definieren:**
    - Name: `MY_GEN`
    - dieselbe Generatortabelle: `tbl_MyGen`
    - identische Spaltennamen: `PK_COLUMN` und `VALUE_COLUMN`
-   - eigener Segmentwert (`pkColumnValue`): `"NUTZER_ID"`
+   - eigener Segmentwert (`pkColumnValue`): `"USER_ID"`
    - `allocationSize`: `10`
    - ID-Annotation: `@GeneratedValue(strategy = GenerationType.TABLE, generator = "MY_GEN")`
 

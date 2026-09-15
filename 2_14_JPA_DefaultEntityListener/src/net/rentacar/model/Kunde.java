@@ -16,7 +16,7 @@ import jakarta.persistence.OneToMany;
  * 
  */
 @Entity
-public class Kunde extends Nutzer {
+public class Kunde extends User {
 
 	private String kundennummer;
 

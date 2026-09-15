@@ -6,7 +6,7 @@ Ergebnismengen von Datenbankabfragen mittels `setFirstResult()` (Offset) und `se
 
 ## Ausgangszustand
 
-In `test/net/rentacar/TestQuery.java` ist die Testmethode `testPagingBySelectNutzer()` ein leerer Rumpf. Im Test-Setup wurden 7 `User`-Datensätze angelegt.
+In `test/net/rentacar/TestQuery.java` ist die Testmethode `testPagingBySelectUser()` ein leerer Rumpf. Im Test-Setup wurden 7 `User`-Datensätze angelegt.
 
 ## Aufgabe
 

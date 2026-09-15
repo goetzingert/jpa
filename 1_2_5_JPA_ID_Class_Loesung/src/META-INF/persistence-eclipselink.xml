@@ -5,6 +5,7 @@
 	<persistence-unit name="projectUnit"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>net.rentacar.model.Kunde</class>
 
 		<!--
 		<properties>

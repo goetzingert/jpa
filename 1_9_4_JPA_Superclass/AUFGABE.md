@@ -6,11 +6,11 @@ Gemeinsame persistente Attribute (wie ID, Versionsfelder für Optimistic Locking
 
 ## Ausgangszustand
 
-Die Entitäten (`Person`, `Nutzer`, etc.) deklarieren ihre ID- und Versionsfelder bisher redundant. Eine gemeinsame Basisklasse `AbstractBusinessObject` fehlt in `1_9_4_JPA_Superclass` bzw. ist noch nicht mit `@MappedSuperclass` eingebunden.
+Die Entitäten (`Person`, `User`, etc.) deklarieren ihre ID- und Versionsfelder bisher redundant. Eine gemeinsame Basisklasse `AbstractBusinessObject` fehlt in `1_9_4_JPA_Superclass` bzw. ist noch nicht mit `@MappedSuperclass` eingebunden.
 
 ## Aufgabe
 
-Bearbeite bzw. erstelle `AbstractBusinessObject.java` und passe `Person.java` sowie `Nutzer.java` an:
+Bearbeite bzw. erstelle `AbstractBusinessObject.java` und passe `Person.java` sowie `User.java` an:
 
 1. **Mapped Superclass `AbstractBusinessObject` erstellen/konfigurieren:**
    - Erstelle `src/net/rentacar/model/AbstractBusinessObject.java` (implementiert `Serializable`).
@@ -19,7 +19,7 @@ Bearbeite bzw. erstelle `AbstractBusinessObject.java` und passe `Person.java` so
    - Ergänze optional ein Versionsfeld für optimistisches Sperren: `@Version @Column(name = "optimisticLocking") private long version;`.
 
 2. **Entitäten von `AbstractBusinessObject` ableiten:**
-   - Passe `Person` und `Nutzer` so an, dass sie `AbstractBusinessObject` erweitern (`extends AbstractBusinessObject`).
+   - Passe `Person` und `User` so an, dass sie `AbstractBusinessObject` erweitern (`extends AbstractBusinessObject`).
    - Entferne die redundanten `@Id`-Deklarationen in den Kindklassen.
 
 3. **Vererbung und Persistenz testen:**
@@ -34,7 +34,7 @@ Führe den Test aus:
 ```
 
 **Beobachtung im SQL-Log und Derby-Schema:**
-- Untersuche die erzeugten Tabellen: Es existieren nur `tbl_person`, `tbl_nutzer` etc. Für `AbstractBusinessObject` wird **keine** eigene Tabelle angelegt.
+- Untersuche die erzeugten Tabellen: Es existieren nur `tbl_person`, `tbl_user` etc. Für `AbstractBusinessObject` wird **keine** eigene Tabelle angelegt.
 - Prüfe, dass die Spalten `id` und `optimisticLocking` (bzw. `version`) in jeder einzelnen konkreten Entitätstabelle vorhanden sind.
 
 ## Erfolgskriterium

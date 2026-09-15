@@ -6,7 +6,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tbl_Nutzer")
+@Table(name = "tbl_User")
 public class User extends AbstractBusinessObject {
 
 	@OneToOne(cascade = CascadeType.PERSIST)

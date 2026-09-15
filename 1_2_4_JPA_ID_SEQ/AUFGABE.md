@@ -6,11 +6,11 @@ Datenbank-Sequenzen mit `@SequenceGenerator` und `GenerationType.SEQUENCE` anbin
 
 ## Ausgangszustand
 
-In `src/net/rentacar/model/VehicleType.java` und `src/net/rentacar/model/Nutzer.java` fehlen die Primärschlüssel-Annotationen für Sequenzen. Der Test `test/net/rentacar/TestConnection.java` schlägt fehl.
+In `src/net/rentacar/model/VehicleType.java` und `src/net/rentacar/model/User.java` fehlen die Primärschlüssel-Annotationen für Sequenzen. Der Test `test/net/rentacar/TestConnection.java` schlägt fehl.
 
 ## Aufgabe
 
-Bearbeite `VehicleType.java` und `Nutzer.java`:
+Bearbeite `VehicleType.java` und `User.java`:
 
 1. **SequenceGenerator für `VehicleType` definieren:**
    - Generator-Name: `Vehicle_SEQ`
@@ -18,10 +18,10 @@ Bearbeite `VehicleType.java` und `Nutzer.java`:
    - `allocationSize`: `1`
    - ID-Annotation: `@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Vehicle_SEQ")`
 
-2. **SequenceGenerator für `Nutzer` definieren:**
-   - Generator-Name: `Nutzer_SEQ`
-   - DB-Sequenzname (`sequenceName`): `Vehicle_SEQ` (Nutzer nutzt dieselbe Sequenz)
-   - ID-Annotation: `@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Nutzer_SEQ")`
+2. **SequenceGenerator für `User` definieren:**
+   - Generator-Name: `User_SEQ`
+   - DB-Sequenzname (`sequenceName`): `Vehicle_SEQ` (User nutzt dieselbe Sequenz)
+   - ID-Annotation: `@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "User_SEQ")`
 
 ## Test und Beobachtung
 

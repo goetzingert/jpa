@@ -31,7 +31,7 @@ public class TestQuery extends AbstractJPATestCase {
 	}
 
 	@Test
-	public void testPagingBySelectNutzer() {
-		// SELECT auf Nutzer mit PAGE-SIZE 3
+	public void testPagingBySelectUser() {
+		// SELECT auf User mit PAGE-SIZE 3
 	}
 }

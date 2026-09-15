@@ -5,6 +5,8 @@
 	<persistence-unit name="projectUnit"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>net.rentacar.model.VehicleType</class>
+		<class>net.rentacar.model.User</class>
 
 		<!--
 		<properties>

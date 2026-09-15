@@ -6,14 +6,14 @@ Erweiterte Filterbedingungen in JPQL formulieren: Mengenprüfungen mit `IN` und 
 
 ## Ausgangszustand
 
-In `test/net/rentacar/TestQuery.java` sind die drei Testmethoden `testQueryForNutzerWithPersonnameISMichaelOrMathias()`, `testQueryForShopMitKeinemVehicle()` und `testQueryForShopsichtInStuttgartUndMuenchen_MitINOperator()` noch unvollständig.
+In `test/net/rentacar/TestQuery.java` sind die drei Testmethoden `testQueryForUserWithPersonnameISMichaelOrMathias()`, `testQueryForShopMitKeinemVehicle()` und `testQueryForShopsichtInStuttgartUndMuenchen_MitINOperator()` noch unvollständig.
 
 ## Aufgabe
 
 Bearbeite `test/net/rentacar/TestQuery.java`:
 
 1. **`IN`-Operator mit Collection-Parameter:**
-   - In `testQueryForNutzerWithPersonnameISMichaelOrMathias()`: Selektiere alle `User`, deren `person.firstName` in der übergebenen Liste `["Michael", "Mathias"]` liegt (`WHERE n.person.firstName IN :FIRSTNAME`).
+   - In `testQueryForUserWithPersonnameISMichaelOrMathias()`: Selektiere alle `User`, deren `person.firstName` in der übergebenen Liste `["Michael", "Mathias"]` liegt (`WHERE n.person.firstName IN :FIRSTNAME`).
 
 2. **Collection-Zustand mit `IS EMPTY` abfragen:**
    - In `testQueryForShopMitKeinemVehicle()`: Finde alle `Shop`-Instanzen, deren Fahrzeugpool leer ist (`WHERE f.carpool IS EMPTY`).

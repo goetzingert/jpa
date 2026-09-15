@@ -16,7 +16,7 @@ public class TestConnection extends AbstractJPATestCase {
 		
 		manager.persist(new VehicleType("1", new VehicleModel("4",new Model("VW", "Golf")), 120, 200));
 		manager.persist(new Shop("1", "Muenchen"));
-		manager.persist(new Nutzer("1", "Hans", "Mustermann"));
+		manager.persist(new User("1", "Hans", "Mustermann"));
 		manager.flush();
 		manager.clear();
 	}
@@ -25,9 +25,9 @@ public class TestConnection extends AbstractJPATestCase {
 		assertNotNull(super.manager.find(VehicleType.class, "1").getId());
 	}
 
-	@Test public void testFindNutzer() {
-		// TODO find Nutzer with EntityManager
-		assertNotNull(super.manager.find(Nutzer.class, "1").getId());
+	@Test public void testFindUser() {
+		// TODO find User with EntityManager
+		assertNotNull(super.manager.find(User.class, "1").getId());
 	}
 
 	@Test public void testFindShop() {

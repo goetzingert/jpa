@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestConnection extends AbstractJPATestCase {
 
-	private Long nutzerId;
+	private Long userId;
 
 	@Override
 	public void setUp() throws Exception {

@@ -6,7 +6,7 @@ Strukturierung von Fachdaten mit Wertobjekten (*Value Objects*) über `@Embeddab
 
 ## Ausgangszustand
 
-In `src/net/rentacar/model/` sind `VehicleType`, `Nutzer` und `Shop` als flache Entitäten ohne strukturierte Wertobjekte definiert. Die Auslagerung von Modell- und Markeninformationen in separate `@Embeddable`-Klassen (`Model`, `VehicleModel`) ist noch nicht vollzogen. In `test/net/rentacar/TestConnection.java` sind Teile der Testabdeckung (`testFindModel`) auskommentiert.
+In `src/net/rentacar/model/` sind `VehicleType`, `User` und `Shop` als flache Entitäten ohne strukturierte Wertobjekte definiert. Die Auslagerung von Modell- und Markeninformationen in separate `@Embeddable`-Klassen (`Model`, `VehicleModel`) ist noch nicht vollzogen. In `test/net/rentacar/TestConnection.java` sind Teile der Testabdeckung (`testFindModel`) auskommentiert.
 
 ## Aufgabe
 

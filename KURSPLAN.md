@@ -9,7 +9,7 @@ Die Lösung wird erst nach einem eigenen Testlauf geöffnet.
 - Java 17 oder neuer
 - Maven über `./mvnw`
 - laufender Derby Network Server auf `localhost:1527`
-- Datenbank `rentacar`, Benutzer `APP`, Passwort `APP`
+- Datenbank `rentacar`, Beuser `APP`, Passwort `APP`
 - eigener Datenbankstand pro Teilnehmer oder Kursgruppe
 
 Integrationstests werden mit dem externen Derby-Server ausgeführt, damit Tabellen,
@@ -122,6 +122,15 @@ Jede Übung sollte künftig diese Abschnitte enthalten:
 - **Erfolgskriterium:** konkreter Testname und erwartetes Ergebnis
 - **Reflexion:** zwei kurze Fragen zum Warum, nicht nur zum Was
 - **Lösungshinweis:** nur nach dem eigenen Versuch öffnen
+
+## Begleitende Kursmaterialien & Nachschlagewerke
+
+- **Setup & Domänenmodell:** [1_0_Basic_Project/README.md](1_0_Basic_Project/README.md)
+- **JPA-Spickzettel (Cheat Sheet):** [JPA_CHEAT_SHEET.md](JPA_CHEAT_SHEET.md) (Kompakte Syntax- & Annotationsreferenz für Entities, JPQL, Criteria API und EntityManager)
+- **Troubleshooting & Best Practices:** [TROUBLESHOOTING_UND_BEST_PRACTICES.md](TROUBLESHOOTING_UND_BEST_PRACTICES.md) (Lösungsstrategien für N+1, LazyLoading, Locking, Validation und Cache-Verhalten)
+- **Folien-Präsentationen (PPTX):**
+  - `JPA_Cheat_Sheet.pptx` (17 Folien im 16:9-Format als visuelle Syntax-, Annotations- & Lifecycle-Referenz)
+  - `JPA_Troubleshooting_und_Best_Practices.pptx` (17 Folien im 16:9-Format für Seminarvorträge und Troubleshooting-Sessions)
 
 ## Didaktische Leitplanken
 

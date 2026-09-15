@@ -12,18 +12,18 @@ In `src/net/rentacar/model/Kunde.java` fehlen `@Entity`, `@IdClass` sowie die `@
 
 Bearbeite `Kunde.java` und `TestConnection.java`:
 
-1. **Schlüsselklasse `Nutzer` analysieren:**
-   Prüfe `src/net/rentacar/model/Nutzer.java`: Die Klasse besitzt `firstName` und `lastName`, implementiert `Serializable` sowie korrekte `equals`/`hashCode`-Methoden.
+1. **Schlüsselklasse `User` analysieren:**
+   Prüfe `src/net/rentacar/model/User.java`: Die Klasse besitzt `firstName` und `lastName`, implementiert `Serializable` sowie korrekte `equals`/`hashCode`-Methoden.
 
 2. **Entity `Kunde` konfigurieren:**
-   - Annotiere `Kunde` mit `@Entity` und `@IdClass(Nutzer.class)`.
+   - Annotiere `Kunde` mit `@Entity` und `@IdClass(User.class)`.
    - Markiere beide Felder `firstName` und `lastName` jeweils mit `@Id`.
    - Biete Getter/Setter für `kundennummer` an.
 
 3. **Test anpassen:**
    Ersetze in `test/net/rentacar/TestConnection.java` in `testFind()` das `null` durch eine konkrete Schlüsselinstanz:
    ```java
-   assertNotNull(super.manager.find(Kunde.class, new Nutzer("a", "b")));
+   assertNotNull(super.manager.find(Kunde.class, new User("a", "b")));
    ```
 
 ## Test und Beobachtung

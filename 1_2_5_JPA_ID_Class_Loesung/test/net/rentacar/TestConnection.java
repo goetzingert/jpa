@@ -2,13 +2,13 @@ package net.rentacar;
 
 import static org.junit.jupiter.api.Assertions.*;
 import net.rentacar.model.Kunde;
-import net.rentacar.model.Nutzer;
+import net.rentacar.model.User;
 
 import org.junit.jupiter.api.Test;
 
 public class TestConnection extends AbstractJPATestCase {
 
-	private Long nutzerId;
+	private Long userId;
 
 	@Override
 	public void setUp() throws Exception {
@@ -20,7 +20,7 @@ public class TestConnection extends AbstractJPATestCase {
 	}
 
 	@Test public void testFind() {
-		assertNotNull(super.manager.find(Kunde.class, new Nutzer("a", "b")));
+		assertNotNull(super.manager.find(Kunde.class, new User("a", "b")));
 	}
 
 }

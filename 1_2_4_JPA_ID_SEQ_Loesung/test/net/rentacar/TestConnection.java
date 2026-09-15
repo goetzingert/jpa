@@ -5,14 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import net.rentacar.model.VehicleType;
-import net.rentacar.model.Nutzer;
+import net.rentacar.model.User;
 import net.rentacar.model.Person;
 import net.rentacar.model.PersonKey;
 
 public class TestConnection extends AbstractJPATestCase {
 
 	private Long id;
-	private Long nutzerId;
+	private Long userId;
 
 	@Override
 	public void setUp() throws Exception {
@@ -27,9 +27,9 @@ public class TestConnection extends AbstractJPATestCase {
 		manager.persist(p);
 		
 		this.id = vehicle.getId();
-		Nutzer n = new Nutzer("a", "b");
+		User n = new User("a", "b");
 		manager.persist(n);
-		this.nutzerId = n.getId();
+		this.userId = n.getId();
 		manager.flush();
 		manager.clear();
 	}
@@ -37,7 +37,7 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test public void testFind() {
 		manager.find(Person.class, new PersonKey("A","B"));
 		assertEquals(id, super.manager.find(VehicleType.class, id).getId());
-		assertEquals(nutzerId, super.manager.find(Nutzer.class, nutzerId)
+		assertEquals(userId, super.manager.find(User.class, userId)
 				.getId());
 	}
 
