@@ -55,4 +55,4 @@ Der Test `test/net/rentacar/TestConnection.java` läuft mit allen 8 Testmethoden
 
 ## Lösungshinweis
 
-Vergleiche deine Lösung bei Bedarf mit dem Referenzstand in `1_8_JPA_ManyToManyLoesung`.
+Vergleiche deine Lösung bei Bedarf mit dem Referenzstand in `1_8_JPA_ManyToMany_Loesung`.

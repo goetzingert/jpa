@@ -60,7 +60,22 @@ private Long id;
 
 ### Zusammengesetzte Schlüssel (`@IdClass` vs. `@EmbeddedId`)
 ```java
-// Variante 1: @IdClass
+// Variante 1: @EmbeddedId (Empfohlener Standard)
+@Embeddable
+public class BookingId implements Serializable {
+    private String contractNumber;
+    private String branchCode;
+    // Pflicht: equals() & hashCode(), no-arg Konstruktor
+}
+
+@Entity
+public class Booking {
+    @EmbeddedId
+    private BookingId id;
+    private String customerName;
+}
+
+// Variante 2: @IdClass (Historisch)
 @Entity
 @IdClass(KundeId.class)
 public class Kunde {
@@ -73,12 +88,33 @@ public class KundeId implements Serializable {
     private Long kundenNummer;
     // Pflicht: equals() & hashCode(), no-arg Konstruktor
 }
+```
 
-// Variante 2: @EmbeddedId
-@Entity
-public class Kunde {
-    @EmbeddedId
-    private KundeId id;
+### Benutzerdefinierte Typen (`@Converter` & `AttributeConverter`)
+```java
+public enum FuelType {
+    PETROL("P"), DIESEL("D"), ELECTRIC("E"), HYBRID("H");
+    private final String code;
+    FuelType(String code) { this.code = code; }
+    public String getCode() { return code; }
+    public static FuelType fromCode(String code) {
+        for (FuelType f : values()) {
+            if (f.code.equals(code)) return f;
+        }
+        throw new IllegalArgumentException("Unbekannter Code: " + code);
+    }
+}
+
+@Converter(autoApply = true)
+public class FuelTypeConverter implements AttributeConverter<FuelType, String> {
+    @Override
+    public String convertToDatabaseColumn(FuelType attribute) {
+        return attribute != null ? attribute.getCode() : null;
+    }
+    @Override
+    public FuelType convertToEntityAttribute(String dbData) {
+        return dbData != null ? FuelType.fromCode(dbData) : null;
+    }
 }
 ```
 
@@ -372,6 +408,32 @@ List<Vehicle> results = query.getResultList();
 Vehicle single = query.getSingleResult();
 ```
 
+### Entity Graphs (Dynamisches Eager Fetching)
+```java
+// 1. Programmatischer Graph (JPA 2.1+)
+EntityGraph<Shop> graph = em.createEntityGraph(Shop.class);
+graph.addAttributeNodes("vehicles");
+
+// 2. Abfrage mit Query Hint
+List<Shop> shops = em.createQuery("SELECT s FROM Shop s", Shop.class)
+    .setHint("jakarta.persistence.fetchgraph", graph)
+    .getResultList();
+```
+
+### Massenoperationen (Bulk Updates & Deletes)
+```java
+// 1. Dirty Changes vor Massenoperation flushen
+em.flush();
+
+// 2. Direktes SQL UPDATE/DELETE via executeUpdate()
+int updated = em.createQuery(
+    "UPDATE Vehicle v SET v.pricePerDay = v.pricePerDay * 1.05 WHERE v.active = true")
+    .executeUpdate();
+
+// 3. WICHTIG: Cache invalidieren, da executeUpdate() den 1st-Level-Cache umgeht!
+em.clear();
+```
+
 ---
 
 ## 7. Criteria API (Typsichere dynamische Abfragen)
@@ -453,17 +515,24 @@ public class Vehicle {
 
     @Version
     @Column(name = "OPTI_VERSION")
-    private int version; // Typ: int, Integer, short, long oder java.sql.Timestamp
+    private Long version; // Typ: Long, Integer, Short oder java.time.Instant
 }
 ```
 
-### Explizites Pessimistic Locking
+### Pessimistic Locking (`SELECT ... FOR UPDATE`)
 ```java
-// Beim Suchen sperren (SELECT ... FOR UPDATE)
+// 1. Beim Suchen direkt sperren (SELECT ... FOR UPDATE)
 Vehicle v = em.find(Vehicle.class, 1L, LockModeType.PESSIMISTIC_WRITE);
 
-// Nachträglich sperren
-em.lock(v, LockModeType.PESSIMISTIC_READ);
+// 2. Nachträglich sperren
+em.lock(v, LockModeType.PESSIMISTIC_WRITE);
+
+// 3. In JPQL Query mit Timeout
+List<Vehicle> list = em.createQuery(
+    "SELECT v FROM Vehicle v WHERE v.reserved = false", Vehicle.class)
+    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+    .setHint("jakarta.persistence.lock.timeout", 3000)
+    .getResultList();
 ```
 
 ---

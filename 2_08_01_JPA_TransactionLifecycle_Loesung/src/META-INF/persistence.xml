@@ -12,11 +12,19 @@
 		<class>net.rentacar.model.Truck</class>
 		<class>net.rentacar.model.Car</class>
 		<properties>
-			<property name="jakarta.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-			<property name="jakarta.persistence.jdbc.url" value="jdbc:derby://localhost:1527/rentacar;create=true"/>
-			<property name="jakarta.persistence.jdbc.user" value="APP"/>
-			<property name="jakarta.persistence.jdbc.password" value="APP"/>
-			<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+			<!-- Derby Network Server: localhost:1527, Datenbank "rentacar" -->
+			<property name="jakarta.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:derby://localhost:1527/rentacar;create=true" />
+			<property name="jakarta.persistence.jdbc.user" value="APP" />
+			<property name="jakarta.persistence.jdbc.password" value="APP" />
+
+			<!-- Schemagenerierung: providerneutrale Standard-Property (JPA 2.1+) -->
+			<property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+
+			<!-- SQL im Testlog mitlesen -->
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect" />
 		</properties>
 	</persistence-unit>
 </persistence>

@@ -4,13 +4,13 @@
 	<parent>
 		<groupId>de.simplydevelop.trainings.jpa</groupId>
 		<artifactId>jpa-parent</artifactId>
-		<version>0.0.1-SNAHPHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../jpa-parent/pom.xml</relativePath>
 	</parent>
 	<groupId>de.simplydevelop.trainings.jpa</groupId>
 	<artifactId>1_1_JPA_DB_CONFIG</artifactId>
-	<version>0.0.1-SNAHPHOT</version>
-	<name>7_1_JPA_DB_CONFIG</name>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>1_1_JPA_DB_CONFIG</name>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>

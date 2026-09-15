@@ -4,9 +4,9 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>de.HPb_gmbh</groupId>
+	<groupId>de.simplydevelop.trainings.jpa</groupId>
 	<artifactId>jpa</artifactId>
-	<version>1.0-SNAHPHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -30,18 +30,24 @@
 		<module>1_2_4_JPA_ID_SEQ_Loesung</module>
 		<module>1_2_5_JPA_ID_Class</module>
 		<module>1_2_5_JPA_ID_Class_Loesung</module>
+		<module>1_2_6_JPA_ID_EmbeddedId</module>
+		<module>1_2_6_JPA_ID_EmbeddedId_Loesung</module>
 		<module>1_3_JPA_TableAndColumnOverride</module>
 		<module>1_3_JPA_TableAndColumnOverride_Loesung</module>
+		<module>1_3_1_JPA_AttributeConverter</module>
+		<module>1_3_1_JPA_AttributeConverter_Loesung</module>
 		<module>1_4_JPA_Embedded</module>
 		<module>1_4_JPA_Embedded_Loesung</module>
 		<module>1_5_JPA_OneToOne</module>
 		<module>1_5_JPA_OneToOne_Loesung</module>
 		<module>1_6_JPA_OneToMany</module>
 		<module>1_6_JPA_OneToMany_Loesung</module>
+		<module>1_6_1_JPA_CascadeOrphanRemoval</module>
+		<module>1_6_1_JPA_CascadeOrphanRemoval_Loesung</module>
 		<module>1_7_JPA_ManyToOne</module>
 		<module>1_7_JPA_ManyToOne_Loesung</module>
 		<module>1_8_JPA_ManyToMany</module>
-		<module>1_8_JPA_ManyToManyLoesung</module>
+		<module>1_8_JPA_ManyToMany_Loesung</module>
 		<module>1_9_1_JPA_SingleTable</module>
 		<module>1_9_1_JPA_SingleTable_Loesung</module>
 		<module>1_9_2_JPA_TablePerConcrete</module>
@@ -66,6 +72,7 @@
 		<module>2_07_JPQL_FetchType</module>
 		<module>2_07_JPQL_FetchType_Loesung_Eager</module>
 		<module>2_07_JPQL_FetchType_Loesung_FetchJoin</module>
+		<module>2_07_JPQL_FetchType_Loesung_EntityGraph</module>
 		<module>2_08_JPQL_GroupBy</module>
 		<module>2_08_JPQL_GroupBy_Loesung</module>
 		<module>2_08_01_JPA_TransactionLifecycle</module>
@@ -76,6 +83,10 @@
 		<module>2_08_03_JPA_Validation_Loesung</module>
 		<module>2_08_04_JPA_EqualsHashCode</module>
 		<module>2_08_04_JPA_EqualsHashCode_Loesung</module>
+		<module>2_08_05_JPA_BulkOperations</module>
+		<module>2_08_05_JPA_BulkOperations_Loesung</module>
+		<module>2_08_06_JPA_PessimisticLocking</module>
+		<module>2_08_06_JPA_PessimisticLocking_Loesung</module>
 		<module>2_09_JPQL_SubQueries</module>
 		<module>2_09_JPQL_SubQueries_Loesung</module>
 		<module>2_10_JPQL_NativeQueries</module>

@@ -23,7 +23,7 @@ Alle Integrations- und Modultests nutzen standardmäßig einen extern laufenden 
 
 - **Host & Port:** `localhost:1527`
 - **Datenbankname:** `rentacar`
-- **Beuser / Passwort:** `APP` / `APP`
+- **Benutzer / Passwort:** `APP` / `APP`
 - **JDBC-URL:** `jdbc:derby://localhost:1527/rentacar;create=true`
 
 Starten Sie den Derby Network Server vor dem Ausführen der Tests in einem separaten Terminal.
@@ -38,7 +38,7 @@ Das Seminar verwendet ein durchgängiges Domänenmodell einer Autovermietung (*R
 - **VehicleType:** Fahrzeugtypen (Marke, Modell, PS, Höchstgeschwindigkeit, Mietsatz).
 - **Vehicle (Car / Truck):** Konkrete Einzelfahrzeuge mit Fahrgestellnummer und Werkstattstatus; spezialisiert in PKW (Türen) und LKW (Zuladung).
 - **Shop:** Mietstationen/Filialen an verschiedenen Standorten.
-- **User / Customer:** Beuser und Kundenstammdaten (Referenznummer, Bankverbindung).
+- **User / Customer:** Benutzer und Kundenstammdaten (Referenznummer, Bankverbindung).
 - **Reservation:** Buchungen von Fahrzeugen an Mietstationen durch Kunden für definierte Zeiträume.
 
 ### Relationaler Blick vs. JPA-Objektblick

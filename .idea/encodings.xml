@@ -14,18 +14,25 @@
     <file url="file://$PROJECT_DIR$/1_2_4_JPA_ID_SEQ_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_2_5_JPA_ID_Class/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_2_5_JPA_ID_Class_Loesung/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/1_2_6_JPA_ID_EmbeddedId/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/1_2_6_JPA_ID_EmbeddedId_Loesung/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/1_3_1_JPA_AttributeConverter/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/1_3_1_JPA_AttributeConverter_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_3_JPA_TableAndColumnOverride/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_3_JPA_TableAndColumnOverride_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_4_JPA_Embedded/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_4_JPA_Embedded_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_5_JPA_OneToOne/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_5_JPA_OneToOne_Loesung/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/1_6_1_JPA_CascadeOrphanRemoval/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/1_6_1_JPA_CascadeOrphanRemoval_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_6_JPA_OneToMany/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_6_JPA_OneToMany_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_7_JPA_ManyToOne/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_7_JPA_ManyToOne_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_8_JPA_ManyToMany/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_8_JPA_ManyToManyLoesung/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/1_8_JPA_ManyToMany_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_9_1_JPA_SingleTable/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_9_1_JPA_SingleTable_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/1_9_2_JPA_TablePerConcrete/src" charset="UTF-8" />
@@ -49,6 +56,7 @@
     <file url="file://$PROJECT_DIR$/2_06_JPQL_InnerJoins_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_07_JPQL_FetchType/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_07_JPQL_FetchType_Loesung_Eager/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/2_07_JPQL_FetchType_Loesung_EntityGraph/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_07_JPQL_FetchType_Loesung_FetchJoin/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_08_01_JPA_TransactionLifecycle/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_08_01_JPA_TransactionLifecycle_Loesung/src" charset="UTF-8" />
@@ -58,6 +66,10 @@
     <file url="file://$PROJECT_DIR$/2_08_03_JPA_Validation_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_08_04_JPA_EqualsHashCode/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_08_04_JPA_EqualsHashCode_Loesung/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/2_08_05_JPA_BulkOperations/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/2_08_05_JPA_BulkOperations_Loesung/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/2_08_06_JPA_PessimisticLocking/src" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/2_08_06_JPA_PessimisticLocking_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_08_JPQL_GroupBy/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_08_JPQL_GroupBy_Loesung/src" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/2_09_JPQL_SubQueries/src" charset="UTF-8" />

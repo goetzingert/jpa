@@ -28,7 +28,7 @@ Bearbeite `test/net/rentacar/TestQuery.java`:
    - In `testQueryForShopsichtInStuttgartUndMuenchen_MitINOperator()`: Finde Shops, deren Standort nicht in `["Muenchen", "Stuttgart"]` liegt (`cq.where(cb.not(shop.get("location").in(orte)))`).
 
 4. **Sortierung mit `cb.asc()`:**
-   - In `criteriaQueryCanApplyStableOrdering()`: Sortiere die Beuser alphabetisch nach Vornamen (`cq.orderBy(cb.asc(user.get("person").get("firstName")))`).
+   - In `criteriaQueryCanApplyStableOrdering()`: Sortiere die Benutzer alphabetisch nach Vornamen (`cq.orderBy(cb.asc(user.get("person").get("firstName")))`).
 
 ## Test und Beobachtung
 

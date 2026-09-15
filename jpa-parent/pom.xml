@@ -6,7 +6,7 @@
 
 	<groupId>de.simplydevelop.trainings.jpa</groupId>
 	<artifactId>jpa-parent</artifactId>
-	<version>0.0.1-SNAHPHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>JPA Course Parent</name>
 
@@ -15,6 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+		<maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>
 		<ojdbc.version>19.3.0.0</ojdbc.version>
 		<mariadb.version>3.0.3</mariadb.version>
 		<hibernate.version>6.6.4.Final</hibernate.version>
@@ -101,6 +102,28 @@
 	</dependencyManagement>
 
 	<profiles>
+		<!--
+			Inspektionsmodus: ./mvnw -Pinspect -pl <modul> test
+			Schema und Testdaten bleiben nach dem Lauf in der Derby-Datenbank stehen und
+			koennen mit ij oder dem Datenbankfenster der IDE angesehen werden.
+		-->
+		<profile>
+			<id>inspect</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>${maven.surefire.plugin.version}</version>
+						<configuration>
+							<systemPropertyVariables>
+								<jpa.inspect>true</jpa.inspect>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>eclipselink</id>
 			<dependencies>

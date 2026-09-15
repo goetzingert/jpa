@@ -38,3 +38,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Course / Database Runtime & Logs ###
+derby.log
+*.log
+rentacar/
+**/out/
+.junie/

@@ -9,18 +9,23 @@ Dieser Leitfaden fasst die wichtigsten Fallstricke, Fehlermeldungen und Best Pra
 1. [Typische Fehlerbilder & Troubleshooting](#1-typische-fehlerbilder--troubleshooting)
    - [LazyInitializationException](#11-lazyinitializationexception)
    - [Das N+1-Select-Problem](#12-das-n1-select-problem)
-   - [OptimisticLockException & StaleObjectStateException](#13-optimisticlockexception--staleobjectstateexception)
-   - [TransientPropertyValueException & PersistentObjectException](#14-transientpropertyvalueexception--persistentobjectexception)
-   - [ConstraintViolationException (Bean Validation)](#15-constraintviolationexception-bean-validation)
-   - [Unzulässige Operationen auf @MappedSuperclass](#16-unzulässige-operationen-auf-mappedsuperclass)
-   - [Derby-spezifische Fallstricke & Locks](#17-derby-spezifische-fallstricke--locks)
+   - [JPA Entity Graphs (Dynamisches Fetching)](#13-jpa-entity-graphs-dynamisches-fetching)
+   - [OptimisticLockException & StaleObjectStateException](#14-optimisticlockexception--staleobjectstateexception)
+   - [Pessimistisches Locking & Concurrency-Deadlocks](#15-pessimistisches-locking--concurrency-deadlocks)
+   - [TransientPropertyValueException & PersistentObjectException](#16-transientpropertyvalueexception--persistentobjectexception)
+   - [ConstraintViolationException (Bean Validation)](#17-constraintviolationexception-bean-validation)
+   - [Unzulässige Operationen auf @MappedSuperclass](#18-unzulässige-operationen-auf-mappedsuperclass)
+   - [Derby-spezifische Fallstricke & Locks](#19-derby-spezifische-fallstricke--locks)
 2. [JPA Architecture & Best Practices](#2-jpa-architecture--best-practices)
    - [Assoziationen: FetchType & Ownership](#21-assoziationen-fetchtype--ownership)
    - [Defensive Synchronisation bei bidirektionalen Beziehungen](#22-defensive-synchronisation-bei-bidirektionalen-beziehungen)
-   - [equals() und hashCode() bei Entities](#23-equals-und-hashcode-bei-entities)
-   - [Transaktionsgrenzen & Persistence Context Management](#24-transaktionsgrenzen--persistence-context-management)
-   - [Abfrage-Optimierung: DTO-Projektionen vs. Entity-Queries](#25-abfrage-optimierung-dto-projektionen-vs-entity-queries)
-   - [Primärschlüssel-Strategien im Vergleich](#26-primärschlüssel-strategien-im-vergleich)
+   - [CascadeType & orphanRemoval in der Praxis](#23-cascadetype--orphanremoval-in-der-praxis)
+   - [equals() und hashCode() bei Entities](#24-equals-und-hashcode-bei-entities)
+   - [Transaktionsgrenzen & Persistence Context Management](#25-transaktionsgrenzen--persistence-context-management)
+   - [Bulk Operations (executeUpdate) & 1st-Level Cache Invalidation](#26-bulk-operations-executeupdate--1st-level-cache-invalidation)
+   - [Abfrage-Optimierung: DTO-Projektionen vs. Entity-Queries](#27-abfrage-optimierung-dto-projektionen-vs-entity-queries)
+   - [Primärschlüssel-Strategien & @EmbeddedId](#28-primärschlüssel-strategien--embeddedid)
+   - [Custom Type Mapping mit AttributeConverter (@Converter)](#29-custom-type-mapping-mit-attributeconverter-converter)
 3. [Entscheidungs- & Referenztabellen](#3-entscheidungs--referenztabellen)
    - [CascadeType-Matrix](#31-cascadetype-matrix)
    - [Entity-Lifecycle-Übersicht](#32-entity-lifecycle-übersicht)
@@ -84,7 +89,35 @@ SQL-Logging aktivieren (`<property name="hibernate.show_sql" value="true"/>`) od
 
 ---
 
-### 1.3 OptimisticLockException & StaleObjectStateException
+### 1.3 JPA Entity Graphs (Dynamisches Fetching)
+
+#### Warum Entity Graphs statt JOIN FETCH?
+- **Keine Query-Modifikation nötig:** JPQL bleibt einfach (`SELECT s FROM Shop s`), der dynamische Ladeplan wird als Hint übergeben.
+- **Kein kartesisches Produkt / Duplikate:** Mehrere `JOIN FETCH` auf Collections erzeugen `MultipleBagFetchException`s oder riesige Resultsets. Entity Graphs lösen dies elegant.
+- **Sauberes Entity-Mapping:** Das Basis-Mapping bleibt durchgängig auf `FetchType.LAZY`.
+
+#### API & Query-Hints
+```java
+// 1. Programmatischer EntityGraph
+EntityGraph<Shop> graph = manager.createEntityGraph(Shop.class);
+graph.addAttributeNodes("carpool");
+Subgraph<Vehicle> vehGraph = graph.addSubgraph("carpool");
+vehGraph.addAttributeNodes("type");
+
+// 2. Abfrage mit Query Hint (fetchgraph oder loadgraph)
+List<Shop> shops = manager.createQuery("SELECT s FROM Shop s", Shop.class)
+    .setHint("jakarta.persistence.fetchgraph", graph)
+    .getResultList();
+```
+
+| Hint-Name | Verhalten |
+| :--- | :--- |
+| `jakarta.persistence.fetchgraph` | Alle gelisteten Attribute = `EAGER`, alle ungelisteten = `LAZY` (überschreibt statisches EAGER strikt). |
+| `jakarta.persistence.loadgraph` | Alle gelisteten Attribute = `EAGER`, alle ungelisteten behalten ihr definiertes Mapping. |
+
+---
+
+### 1.4 OptimisticLockException & StaleObjectStateException
 
 #### Symptom
 ```text
@@ -95,7 +128,7 @@ jakarta.persistence.OptimisticLockException: Row was updated or deleted by anoth
 Zwei parallele Transaktionen haben dieselbe Entity mit `@Version` geladen. Transaktion A speichert zuerst und erhöht die Versionsnummer (z. B. von 1 auf 2). Wenn Transaktion B speichert, schlägt das `UPDATE ... WHERE id = ? AND version = 1` fehl, da 0 Zeilen verändert wurden.
 
 #### Lösungsstrategie
-1. **Fachliche Behandlung:** OptimisticLockException fangen, Transaktion zurückrollen (`rollback()`), den aktuellen Stand aus der Datenbank neu laden (`clear()` / `find()`) und den Beuser informieren oder den Vorgang wiederholen (Retry-Pattern).
+1. **Fachliche Behandlung:** OptimisticLockException fangen, Transaktion zurückrollen (`rollback()`), den aktuellen Stand aus der Datenbank neu laden (`clear()` / `find()`) und den Benutzer informieren oder den Vorgang wiederholen (Retry-Pattern).
 2. **Sauberes Concurrency-Handling im Test:**
    ```java
    firstManager.getTransaction().commit(); // Erhöht Version in der DB
@@ -108,7 +141,30 @@ Zwei parallele Transaktionen haben dieselbe Entity mit `@Version` geladen. Trans
 
 ---
 
-### 1.4 TransientPropertyValueException & PersistentObjectException
+### 1.5 Pessimistisches Locking & Concurrency-Deadlocks
+
+#### Wann Optimistisches Locking nicht ausreicht
+Bei hoher Schreibkonkurrenz auf knappen Ressourcen (z. B. Ticketreservierung, Fahrzeugbuchung, Kontostände) scheitern optimistische Sperren ständig an Kollisionen.
+
+#### Lösung: Pessimistic Locking (`SELECT ... FOR UPDATE`)
+```java
+// 1. Beim Laden sperren
+PessimisticVehicle v = manager.find(PessimisticVehicle.class, 1L, LockModeType.PESSIMISTIC_WRITE);
+
+// 2. Nachträglich in bestehender Entity sperren
+manager.lock(v, LockModeType.PESSIMISTIC_WRITE);
+
+// 3. Mit Lock-Timeout in JPQL Query
+List<PessimisticVehicle> list = manager.createQuery(
+    "SELECT v FROM PessimisticVehicle v WHERE v.reserved = false", PessimisticVehicle.class)
+    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+    .setHint("jakarta.persistence.lock.timeout", 3000)
+    .getResultList();
+```
+
+---
+
+### 1.6 TransientPropertyValueException & PersistentObjectException
 
 #### Symptome
 - `org.hibernate.TransientPropertyValueException: object references an unsaved transient instance - save the transient instance before flushing`
@@ -122,7 +178,7 @@ Zwei parallele Transaktionen haben dieselbe Entity mit `@Version` geladen. Trans
 
 ---
 
-### 1.5 ConstraintViolationException (Bean Validation)
+### 1.7 ConstraintViolationException (Bean Validation)
 
 #### Symptom
 ```text
@@ -136,7 +192,7 @@ jakarta.validation.ConstraintViolationException: Validation failed for classes [
 
 ---
 
-### 1.6 Unzulässige Operationen auf @MappedSuperclass
+### 1.8 Unzulässige Operationen auf @MappedSuperclass
 
 #### Symptom
 ```text
@@ -152,7 +208,7 @@ java.lang.IllegalArgumentException: Unknown entity: net.rentacar.model.AbstractB
 
 ---
 
-### 1.7 Derby-spezifische Fallstricke & Locks
+### 1.9 Derby-spezifische Fallstricke & Locks
 
 #### 1. LockTimeoutException bei parallelen EntityManager-Instanzen
 - **Problem:** Derby sperrt Zeilen und Tabellensegmente restriktiv. Wenn `firstManager` Daten per `persist()` oder `flush()` ändert, ohne zu committen, blockiert ein lesender Zugriff von `secondManager` bis zum Lock-Timeout.
@@ -160,7 +216,7 @@ java.lang.IllegalArgumentException: Unknown entity: net.rentacar.model.AbstractB
 
 #### 2. DDL-Warnungen beim Start (`create-drop`)
 - **Beobachtung:** Beim Start werden Warnungen geloggt wie `DROP TABLE ... cannot be performed because it does not exist`.
-- **Bedeutung:** Dies ist bei `hibernate.hbm2ddl.auto=create-drop` völlig normal. Hibernate versucht vor der Erstellung existierende Relationen zu löschen.
+- **Bedeutung:** Dies ist bei `jakarta.persistence.schema-generation.database.action=drop-and-create` (Hibernate-Äquivalent: `hibernate.hbm2ddl.auto=create-drop`) völlig normal. Der Provider versucht vor der Erstellung existierende Relationen zu löschen.
 
 ---
 
@@ -208,7 +264,28 @@ public class Shop {
 
 ---
 
-### 2.3 equals() und hashCode() bei Entities
+### 2.3 CascadeType & orphanRemoval in der Praxis
+
+#### Unterschied: `CascadeType.REMOVE` vs. `orphanRemoval = true`
+- **`CascadeType.REMOVE`:** Löscht abhängige Kind-Datensätze nur dann, wenn das gesamte Elternobjekt (`RentalContract`) mit `manager.remove(contract)` gelöscht wird.
+- **`orphanRemoval = true`:** Löscht ein Kindobjekt zusätzlich per SQL `DELETE`, wenn es aus der Java-Collection des Elternobjekts entfernt wird (`contract.removeDamage(d)`).
+
+```java
+@Entity
+public class RentalContract {
+    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DamageRecord> damages = new ArrayList<>();
+
+    public void removeDamage(DamageRecord damage) {
+        this.damages.remove(damage);
+        damage.setContract(null); // Triggert SQL DELETE beim Flush!
+    }
+}
+```
+
+---
+
+### 2.4 equals() und hashCode() bei Entities
 
 #### Die 3 goldenen Regeln:
 1. **Niemals die Datenbank-ID (`@Id`) allein für `hashCode()` nutzen**, wenn diese per `@GeneratedValue` generiert wird!
@@ -220,7 +297,7 @@ public class Shop {
 
 ---
 
-### 2.4 Transaktionsgrenzen & Persistence Context Management
+### 2.5 Transaktionsgrenzen & Persistence Context Management
 
 #### 1. Entity-Zustände im Überblick
 ```text
@@ -256,7 +333,28 @@ em.close();
 
 ---
 
-### 2.5 Abfrage-Optimierung: DTO-Projektionen vs. Entity-Queries
+### 2.6 Bulk Operations (executeUpdate) & 1st-Level Cache Invalidation
+
+#### Das Stale-Data-Problem
+JPQL `UPDATE`- und `DELETE`-Befehle (`query.executeUpdate()`) werden direkt als SQL an die Datenbank gesendet und **umgehen den 1st-Level-Cache vollständig**. Bereits geladene Entities im Persistence Context behalten ihren alten Stand.
+
+#### Das 3-Schritt-Muster
+```java
+// 1. Ungespeicherte Änderungen in DB flushen
+manager.flush();
+
+// 2. Massenoperation direkt auf DB ausführen
+int updatedCount = manager.createQuery(
+    "UPDATE BulkVehicle v SET v.dailyRate = v.dailyRate * 1.1 WHERE v.active = true")
+    .executeUpdate();
+
+// 3. Cache leeren, damit Entities frisch geladen werden!
+manager.clear(); // Alternativ gezielt: manager.refresh(entity);
+```
+
+---
+
+### 2.7 Abfrage-Optimierung: DTO-Projektionen vs. Entity-Queries
 
 Wenn Daten nur zur Anzeige oder Weiterverarbeitung gelesen werden, ist das Laden vollständiger Entities mit allen Feldern und Proxies ineffizient.
 
@@ -277,14 +375,41 @@ List<VehicleSummaryDto> dtos = manager.createQuery(
 
 ---
 
-### 2.6 Primärschlüssel-Strategien im Vergleich
+### 2.8 Primärschlüssel-Strategien & @EmbeddedId
 
 | Strategie | Funktionsweise | Vorteile | Nachteile |
 | :--- | :--- | :--- | :--- |
 | `IDENTITY` | Auto-Increment Spalte der DB | Einfach, von fast allen DBs unterstützt | **Verhindert JDBC Batching**, da JPA die ID sofort beim `persist()` per DB-Insert ermitteln muss. |
 | `SEQUENCE` | DB-Sequenz (`CREATE SEQUENCE`) | **Batching-fähig**, performant mit Sequenz-Preallocation (`allocationSize = 50`) | Nicht von allen DBs (z. B. älteres MySQL) unterstützt. |
 | `TABLE` | Eigene Tabelle verwaltet Zähler | Datenbankunabhängig | Langsam durch separate Tabellen-Locks und Updates. |
-| `@IdClass` / `@EmbeddedId` | Zusammengesetzter Schlüssel | Für bestehende Alttabellen ohne künstlichen PK | Aufwendiger im Handling; erfordert `Serializable`, `equals` & `hashCode`. |
+| `@EmbeddedId` (Empfohlen) | Zusammengesetztes `@Embeddable` ID-Objekt | Kapselt Schlüssel sauber, typsicher bei `find()` | Erfordert `Serializable`, `equals` & `hashCode`. |
+| `@IdClass` (Vermeiden) | Flache Attribute in Entity + separate ID-Klasse | Historische Alternative | Redundanz in der Entity, unübersichtlich. |
+
+---
+
+### 2.9 Custom Type Mapping mit AttributeConverter (@Converter)
+
+Klassische Enum-Mappings mit `@Enumerated(ORDINAL)` führen bei Code-Refactorings zu unbemerkter Datenkorruption, während `@Enumerated(STRING)` unnötig viel Speicherplatz verbraucht.
+
+#### Lösung mit `AttributeConverter<X, Y>`:
+```java
+@Converter(autoApply = true)
+public class FuelTypeConverter implements AttributeConverter<FuelType, String> {
+    @Override
+    public String convertToDatabaseColumn(FuelType type) {
+        return type != null ? type.getCode() : null; // z.B. "E", "D", "P"
+    }
+
+    @Override
+    public FuelType convertToEntityAttribute(String code) {
+        return FuelType.fromCode(code);
+    }
+}
+```
+**Vorteile:**
+- DB speichert extrem kompakte Einzelzeichen (`CHAR(1)`).
+- Java-Code nutzt typsicheres, erweiterbares Enum.
+- Durch `autoApply = true` global für alle Entities aktiv.
 
 ---
 

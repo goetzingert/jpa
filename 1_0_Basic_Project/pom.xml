@@ -4,37 +4,27 @@
 	<parent>
 		<groupId>de.simplydevelop.trainings.jpa</groupId>
 		<artifactId>jpa-parent</artifactId>
-		<version>0.0.1-SNAHPHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../jpa-parent/pom.xml</relativePath>
 	</parent>
 	<groupId>de.simplydevelop.trainings.jpa</groupId>
 	<artifactId>1_0_Basic_Project</artifactId>
-	<version>0.0.1-SNAHPHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>Basic Project</name>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
 	</build>
 	<dependencies>
-		<!-- httHP://mvnrepository.com/artifact/com.oracle.ojdbc/ojdbc8 -->
-		<dependency>
-			<groupId>com.oracle.ojdbc</groupId>
-			<artifactId>ojdbc8</artifactId>
-		</dependency>
-		<!-- httHP://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
-		<dependency>
-			<groupId>org.mariadb.jdbc</groupId>
-			<artifactId>mariadb-java-client</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>mssql-jdbc</artifactId>
-		</dependency>
+		<!--
+			Der Kurs arbeitet ausschliesslich gegen den Apache Derby Network Server.
+			Treiber fuer andere Datenbanken sind im jpa-parent verwaltet (dependencyManagement)
+			und koennen bei Bedarf hier ohne Versionsangabe ergaenzt werden.
+		-->
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbyclient</artifactId>
