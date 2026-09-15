@@ -75,6 +75,8 @@ public class TestQuery extends AbstractJPATestCase {
 				.getResultList();
 		Object[] result = resultList.get(0);
 		assertEquals(2, resultList.size());
+		assertEquals(2L, resultList.stream().map(row -> (Long) row[1]).min(Long::compareTo).orElseThrow());
+		assertEquals(3L, resultList.stream().map(row -> (Long) row[1]).max(Long::compareTo).orElseThrow());
 	}
 
 	@Test

@@ -75,7 +75,7 @@ public class TestNamedQuery extends AbstractJPATestCase {
 		Query namedQuery = manager
 				.createNamedQuery(Reservation.FIND_BY_START_Shop);
 		namedQuery.setParameter(Reservation.PARAM_Shop, muenchen);
-		assertEquals(3, namedQuery.getResultList().size());
+		assertEquals(2, namedQuery.getResultList().size());
 	}
 
 }

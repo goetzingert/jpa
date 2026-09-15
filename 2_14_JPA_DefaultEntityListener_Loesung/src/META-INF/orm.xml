@@ -5,7 +5,7 @@
 	version="3.0">
 	<persistence-unit-metadata>
 		<persistence-unit-defaults>
-			<entity-listeners><entity-listener class="listener.net.rentacar.model.DefaultListener"></entity-listener></entity-listeners>
+			<entity-listeners><entity-listener class="net.rentacar.model.listener.DefaultListener"></entity-listener></entity-listeners>
 		</persistence-unit-defaults>
 	</persistence-unit-metadata>
 </entity-mappings>

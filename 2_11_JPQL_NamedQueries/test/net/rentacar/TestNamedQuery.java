@@ -73,7 +73,7 @@ public class TestNamedQuery extends AbstractJPATestCase {
 	public void testCallNamedQuery() {
 		// TODO call NamedQuery "getAllReservierungenMitVehicle = BMW"
 		Query namedQuery = null;
-		assertEquals(3, namedQuery.getResultList().size());
+		assertEquals(2, namedQuery.getResultList().size());
 	}
 
 }

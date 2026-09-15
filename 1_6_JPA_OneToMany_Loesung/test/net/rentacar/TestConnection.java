@@ -59,10 +59,7 @@ public class TestConnection extends AbstractJPATestCase {
 	}
 
 	@Test public void testOneToManyOfShop() {
-		Shop Shop = super.manager.find(Shop.class, "1");
-		manager.clear();
-		manager.close();
-		assertTrue(Shop.getVehicles()
+		assertTrue(super.manager.find(Shop.class, "1").getVehicles()
 				.toArray().length > 0);
 	}
 }

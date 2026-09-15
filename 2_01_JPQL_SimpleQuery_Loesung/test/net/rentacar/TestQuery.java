@@ -1,6 +1,7 @@
 package net.rentacar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import net.rentacar.model.*;
 
@@ -26,8 +27,16 @@ public class TestQuery extends AbstractJPATestCase {
 		manager.clear();
 	}
 
-	@Test public void testQueryForVehicleMoreThan130HP() {
-		assertEquals(1, manager.createQuery("SELECT f FROM VehicleType f WHERE f.hp > 130", VehicleType.class)
-				.getResultList().size());
+	@Test
+	public void findsOnlyBmwVehicleTypeAbove130Horsepower() {
+		var result = manager.createQuery(
+				"SELECT f FROM VehicleType f WHERE f.hp > 130", VehicleType.class)
+				.getResultList();
+
+		assertEquals(1, result.size());
+		VehicleType vehicleType = result.get(0);
+		assertNotNull(vehicleType.getModel());
+		assertEquals("BMW", vehicleType.getModel().getBrand());
+		assertEquals(150, vehicleType.getHp());
 	}
 }

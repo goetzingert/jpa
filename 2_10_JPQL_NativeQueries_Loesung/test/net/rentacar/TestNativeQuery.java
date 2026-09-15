@@ -1,5 +1,8 @@
 package net.rentacar;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.util.List;
 
 import net.rentacar.model.*;
@@ -50,16 +53,27 @@ public class TestNativeQuery extends AbstractJPATestCase {
 	public void testNativeQueryOfVehicleUndItem() {
 		// TODO Lade alle Vehicles mit brand BMW und zugeh�rige Vehicle
 		// mittels Native Query und ResultSetMapping
-		System.out.println(manager.createNativeQuery(
+		List<?> vehicleTypes = manager.createNativeQuery(
 				"Select t.id, t.modell, t.brand, t.HP, t.maxKph, p.doors, l.maxLoad "
-						+ "FROM tbl_VehicleType t LEFT OUTER JOIN TBL_Car p ON t.id = p.id LEFT OUTER JOIN TBL_TRUCK l ON t.id = l.id",
-				"VehicleType_Mapping").getResultList());
+						+ "FROM tbl_VehicleType t LEFT OUTER JOIN TBL_Car p ON t.id = p.id LEFT OUTER JOIN TBL_TRUCK l ON t.id = l.id")
+				.getResultList();
+		assertFalse(vehicleTypes.isEmpty());
 
 		List<?> resultList = manager.createNativeQuery(
 				"Select t.id, t.modell, t.brand, t.HP, t.maxKph, p.doors, l.maxLoad, i.id AS item_id, i.type_id, i.LOCATION_ID "
-						+ "FROM tbl_VehicleType t LEFT OUTER JOIN TBL_Car p ON t.id = p.id LEFT OUTER JOIN TBL_TRUCK l ON t.id = l.id JOIN tbl_Vehicle i ON i.type_id = t.id",
-				"VehicleType_Item_Mapping").getResultList();
-		System.out.println(resultList);
+						+ "FROM tbl_VehicleType t LEFT OUTER JOIN TBL_Car p ON t.id = p.id LEFT OUTER JOIN TBL_TRUCK l ON t.id = l.id JOIN tbl_Vehicle i ON i.type_id = t.id")
+				.getResultList();
+		assertFalse(resultList.isEmpty());
+	}
+
+	@Test
+	public void nativeQuerySupportsBoundParameters() {
+		Number count = (Number) manager.createNativeQuery(
+				"SELECT COUNT(*) FROM tbl_VehicleType WHERE HP > ?1")
+				.setParameter(1, 130)
+				.getSingleResult();
+
+		assertEquals(1, count.intValue());
 	}
 
 }

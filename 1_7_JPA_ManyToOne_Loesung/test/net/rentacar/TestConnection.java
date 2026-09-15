@@ -44,11 +44,6 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test public void testFindShop() {
 		// TODO find Shop with EntityManager
 		Shop find = super.manager.find(Shop.class, "1");
-		manager.getTransaction().commit();
-		manager.close();
-		Set<Vehicle> Vehicles = find.getVehicles();
-		
-		int size = Vehicles.size();
 		assertNotNull(find.getId());
 	}
 

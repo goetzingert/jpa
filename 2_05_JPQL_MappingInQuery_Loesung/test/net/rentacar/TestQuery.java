@@ -1,5 +1,6 @@
 package net.rentacar;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import net.rentacar.dto.VehicleDTO;
 import net.rentacar.model.*;
@@ -40,11 +41,15 @@ public class TestQuery extends AbstractJPATestCase {
 
 	@Test
 	public void testQueryWithMappingInSelect() {
-		assertTrue(manager
+		VehicleDTO dto = manager
 				.createQuery(
 						"Select new "
 								+ VehicleDTO.class.getName()
 								+ "(f.model.modell,f.maxKpH) FROM VehicleType f", VehicleDTO.class)
-				.getResultList().get(0) instanceof VehicleDTO);
+				.getResultList().get(0);
+
+		assertTrue(dto instanceof VehicleDTO);
+		assertEquals("Golf", dto.modell);
+		assertEquals(200, dto.maxKph);
 	}
 }

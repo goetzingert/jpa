@@ -81,4 +81,13 @@ public class TestQuery extends AbstractJPATestCase {
 				.getResultList();
 		assertEquals(2, resultList.size());
 	}
+
+	@Test
+	public void returnsNoCustomerAboveAnUnreachableTotal() {
+		List<?> resultList = manager.createQuery(
+				"Select k FROM Customer k WHERE 1000 < (Select sum(res.price) from k.reservations res)")
+				.getResultList();
+
+		assertTrue(resultList.isEmpty());
+	}
 }

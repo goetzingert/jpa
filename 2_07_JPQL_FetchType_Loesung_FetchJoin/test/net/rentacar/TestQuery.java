@@ -1,5 +1,8 @@
 package net.rentacar;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import net.rentacar.model.*;
@@ -45,14 +48,17 @@ public class TestQuery extends AbstractJPATestCase {
 	public void testForVehicleInShop() {
 		List<Shop> shop = manager
 				.createQuery(
-						"Select f FROM Filliale f LEFT JOIN FETCH f.Vehicles", Shop.class)
+						"SELECT f FROM Shop f LEFT JOIN FETCH f.carpool", Shop.class)
 				.getResultList();
+		boolean hasLoadedVehicle = false;
 		for (Shop shop2 : shop) {
 			
 			for (Vehicle item : shop2.getCarpool()) {
-				System.out.println(item.getType().getModel().getBrand());
+				assertFalse(item.getType().getModel().getBrand().isEmpty());
+				hasLoadedVehicle = true;
 			}
 		}
+		assertTrue(hasLoadedVehicle);
 	}
 
 }

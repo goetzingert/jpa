@@ -58,4 +58,11 @@ public class TestQuery extends AbstractJPATestCase {
 						.getSingleResult().getLocation());
 	}
 
+	@Test
+	public void leftJoinAlsoReturnsShopsWithoutVehicles() {
+		assertEquals(3, manager.createQuery(
+				"SELECT DISTINCT f FROM Shop f LEFT JOIN f.carpool fz", Shop.class)
+				.getResultList().size());
+	}
+
 }

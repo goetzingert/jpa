@@ -68,6 +68,14 @@
 		<module>2_07_JPQL_FetchType_Loesung_FetchJoin</module>
 		<module>2_08_JPQL_GroupBy</module>
 		<module>2_08_JPQL_GroupBy_Loesung</module>
+		<module>2_08_01_JPA_TransactionLifecycle</module>
+		<module>2_08_01_JPA_TransactionLifecycle_Loesung</module>
+		<module>2_08_02_JPA_OptimisticLocking</module>
+		<module>2_08_02_JPA_OptimisticLocking_Loesung</module>
+		<module>2_08_03_JPA_Validation</module>
+		<module>2_08_03_JPA_Validation_Loesung</module>
+		<module>2_08_04_JPA_EqualsHashCode</module>
+		<module>2_08_04_JPA_EqualsHashCode_Loesung</module>
 		<module>2_09_JPQL_SubQueries</module>
 		<module>2_09_JPQL_SubQueries_Loesung</module>
 		<module>2_10_JPQL_NativeQueries</module>

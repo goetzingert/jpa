@@ -81,4 +81,15 @@ public class TestQuery extends AbstractJPATestCase {
 
 		assertEquals(1, manager.createQuery(cq).getResultList().size());
 	}
+
+	@Test
+	public void criteriaQueryCanApplyStableOrdering() {
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<User> cq = cb.createQuery(User.class);
+		Root<User> user = cq.from(User.class);
+
+		cq.select(user).orderBy(cb.asc(user.get("person").get("firstName")));
+
+		assertEquals(7, manager.createQuery(cq).getResultList().size());
+	}
 }

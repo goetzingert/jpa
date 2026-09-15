@@ -61,6 +61,6 @@ public class TestConnection extends AbstractJPATestCase {
 	}
 	
 	@Test public void testInheritance() {
-		assertNotNull(super.manager.find(AbstractBusinessObject.class, "1"));
+		assertNotNull(super.manager.find(Truck.class, "1"));
 	}
 }

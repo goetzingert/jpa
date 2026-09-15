@@ -1,5 +1,6 @@
 package net.rentacar;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.UUID;
@@ -20,9 +21,14 @@ public class TestConnection extends AbstractJPATestCase {
 		manager.clear();
 	}
 	
-	@Test public void testFind()
+	@Test
+	public void findsPersistedVehicleTypeById()
 	{
-		assertNotNull(super.manager.find(VehicleType.class, "1").getId());
+		VehicleType vehicleType = super.manager.find(VehicleType.class, "1");
+		assertNotNull(vehicleType);
+		assertEquals("1", vehicleType.getId());
+		assertEquals("VW", vehicleType.getBrand());
+		assertEquals("Golf", vehicleType.getModell());
 		manager.getTransaction().commit();
 		manager.close();
 		manager = managerFactory.createEntityManager();

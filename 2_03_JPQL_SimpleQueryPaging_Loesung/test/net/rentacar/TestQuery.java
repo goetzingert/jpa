@@ -53,6 +53,13 @@ public class TestQuery extends AbstractJPATestCase {
 				.getResultList().size());
 	}
 
+	@Test
+	public void returnsEmptyPageAfterTheLastUser() {
+		TypedQuery<User> query = manager.createQuery("SELECT n FROM User n ORDER BY n.id", User.class);
+
+		assertEquals(0, query.setFirstResult(7).setMaxResults(3).getResultList().size());
+	}
+
 
 
 	private int incrementFirstResultWithResultCount(TypedQuery<User> createQuery) {
