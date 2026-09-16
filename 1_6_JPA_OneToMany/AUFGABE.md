@@ -2,7 +2,7 @@
 
 ## Lernziel
 
-Eine 1:N-Beziehung (`@OneToMany`) zwischen zwei Entitäten mit Collection-Mapping (`Set<Vehicle>`) abbilden, den Unterschied zwischen Join-Tabelle und Fremdschlüssel-Spalte (`@JoinColumn`) verstehen und verknüpfte Entitäten über die Eltern-Entity persistieren und laden.
+Eine 1:N-Beziehung (`@OneToMany`) zwischen zwei Entitäten (`Shop` und `Vehicle`) mit Collection-Mapping (`Set<Vehicle>`) abbilden, den Unterschied zwischen Join-Tabelle und Fremdschlüssel-Spalte (`@JoinColumn`) verstehen, Collections manipulieren und das Löschverhalten ohne Kaskadierung nachvollziehen.
 
 ## Ausgangszustand
 
@@ -12,14 +12,18 @@ In `src/net/rentacar/model/Shop.java` ist die Collection `vehicles` noch mit `@T
 
 Bearbeite `src/net/rentacar/model/Shop.java` und `test/net/rentacar/TestConnection.java`:
 
-1. **1:N-Collection annotieren:**
+1. **1:N-Collection annotieren (`Shop.java`):**
    - Entferne `@Transient` von `private Set<Vehicle> vehicles`.
    - Annotiere das Feld mit `@OneToMany`.
    - Ergänze `@JoinColumn(name = "shop_id")`, um eine direkte Fremdschlüsselspalte in der Zieltabelle `tbl_Vehicle` zu verwenden (statt einer Standard-Join-Tabelle).
 
-2. **Testdaten in `TestConnection.java` pflegen:**
-   - Erzeuge in `setUp()` ein `Vehicle`, ordne es dem `Shop` zu und füge es der Collection `Shop.getVehicles().add(fz)` hinzu.
-   - Persistiere beide Instanzen und prüfe die Datenhaltung.
+2. **Testmethoden implementieren (`TestConnection.java`):**
+   - `testFindShop()`: Lade den Shop und prüfe den Standort.
+   - `testOneToManyOfShop()`: Prüfe, dass die Collection geladen wird und 1 Fahrzeug enthält.
+   - `testAddingVehicleToShopCollection()`: Füge ein 2. Fahrzeug zur Collection hinzu und prüfe die Speicherung nach `flush()`.
+   - `testRemovingVehicleFromShopCollectionSetsForeignKeyToNull()`: Leere die Collection und prüfe, dass der Fremdschlüssel gelöst wird, das Fahrzeug selbst aber erhalten bleibt.
+   - `testEmptyShopReturnsEmptyCollectionNotNull()`: Verifiziere, dass Shops ohne Fahrzeuge ein leeres Set (nicht `null`) liefern.
+   - `testShopLocationUpdatePropagatesOnFlush()`: Prüfe Dirty Checking auf dem Shop-Standort.
 
 ## Test und Beobachtung
 
@@ -35,7 +39,7 @@ Führe den Test aus:
 
 ## Erfolgskriterium
 
-Der Test `test/net/rentacar/TestConnection.java` läuft mit allen 6 Testmethoden (insb. `testOneToManyOfShop`) fehlerfrei durch:
+Der Test `test/net/rentacar/TestConnection.java` läuft mit allen 6 Testmethoden fehlerfrei durch:
 ```text
 [INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
 ```
@@ -44,6 +48,7 @@ Der Test `test/net/rentacar/TestConnection.java` läuft mit allen 6 Testmethoden
 
 1. Warum erzeugt ein reines `@OneToMany` ohne `@JoinColumn` und ohne `mappedBy` standardmäßig eine Join-Tabelle?
 2. Warum erfordert ein unidirektionales `@OneToMany` mit `@JoinColumn` beim Speichern ein zusätzliches `UPDATE`-Statement für den Fremdschlüssel?
+3. Was ist der Unterschied zwischen dem Leeren einer `@OneToMany`-Collection mit und ohne `orphanRemoval = true`?
 
 ## Lösungshinweis
 

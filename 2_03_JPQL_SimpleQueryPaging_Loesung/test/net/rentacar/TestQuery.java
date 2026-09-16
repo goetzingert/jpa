@@ -1,7 +1,9 @@
 package net.rentacar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.TypedQuery;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestQuery extends AbstractJPATestCase {
 
+	@Override
 	public void setUp() throws Exception {
 		
 		VehicleType Vehicle = new Car(new Model("VW", "Golf"), 120, 200, 2);
@@ -30,39 +33,90 @@ public class TestQuery extends AbstractJPATestCase {
 		manager.persist(new User(new Person("Herbert", "Schmitt")));
 		manager.persist(new User(new Person("Ingo", "Meyer")));
 		manager.persist(new User(new Person("Mathias", "Mayer")));
-		manager.persist(new User(new Person("Michael", "Anst�dt")));
+		manager.persist(new User(new Person("Michael", "Anstaedt")));
 		manager.persist(new User(new Person("Ralf", "Gross")));
 		manager.flush();
 		manager.clear();
 	}
 
+	@Test
+	public void testPagingIteratesThroughAllPagesWithFixedPageSize() {
+		// 1. Paging in Schleife mit Page-Size 3 über 7 User-Datensätze
+		TypedQuery<User> query = manager.createQuery("SELECT n FROM User n ORDER BY n.id", User.class);
+		int pageSize = 3;
+		query.setMaxResults(pageSize);
 
+		List<User> allPagedUsers = new ArrayList<>();
+		int offset = 0;
+		List<User> page;
 
-	@Test public void testPagingBySelectUser() {
+		do {
+			query.setFirstResult(offset);
+			page = query.getResultList();
+			allPagedUsers.addAll(page);
+			offset += pageSize;
+		} while (!page.isEmpty());
 
-		TypedQuery<User> createQuery = manager.createQuery("SELECT n FROM User n", User.class);
-		createQuery.setMaxResults(3);
-		boolean fertig = false;
-		while(!fertig){
-			int nextFirstResultIndex = incrementFirstResultWithResultCount(createQuery);
-			createQuery.setFirstResult(nextFirstResultIndex);
-			List<User> resultList = createQuery.getResultList();
-			fertig = resultList.isEmpty();
-		}
-		assertEquals(2,createQuery.setFirstResult(5).setMaxResults(3)
-				.getResultList().size());
+		assertEquals(7, allPagedUsers.size());
 	}
 
 	@Test
-	public void returnsEmptyPageAfterTheLastUser() {
-		TypedQuery<User> query = manager.createQuery("SELECT n FROM User n ORDER BY n.id", User.class);
+	public void testDeterministicPagingRequiresOrderBy() {
+		// 2. Best Practice: Paging ohne ORDER BY ist unbestimmt (Non-deterministic paging).
+		// Sortiere nach Nachname aufsteigend und prüfe die exakten Seiteninhalte.
+		TypedQuery<User> query = manager.createQuery(
+				"SELECT n FROM User n ORDER BY n.person.lastName ASC, n.person.firstName ASC", User.class);
 
-		assertEquals(0, query.setFirstResult(7).setMaxResults(3).getResultList().size());
+		int pageSize = 3;
+
+		// Seite 1 (Offset 0, Limit 3): Anstaedt, Gross, Mayer
+		List<User> page1 = query.setFirstResult(0).setMaxResults(pageSize).getResultList();
+		assertEquals(3, page1.size());
+		assertEquals("Anstaedt", page1.get(0).getPerson().getLastName());
+		assertEquals("Gross", page1.get(1).getPerson().getLastName());
+		assertEquals("Mayer", page1.get(2).getPerson().getLastName());
+
+		// Seite 2 (Offset 3, Limit 3): Meyer, Mueller, Mustermann
+		List<User> page2 = query.setFirstResult(3).setMaxResults(pageSize).getResultList();
+		assertEquals(3, page2.size());
+		assertEquals("Meyer", page2.get(0).getPerson().getLastName());
+		assertEquals("Mueller", page2.get(1).getPerson().getLastName());
+		assertEquals("Mustermann", page2.get(2).getPerson().getLastName());
+
+		// Seite 3 (Offset 6, Limit 3): Schmitt (Restseite)
+		List<User> page3 = query.setFirstResult(6).setMaxResults(pageSize).getResultList();
+		assertEquals(1, page3.size());
+		assertEquals("Schmitt", page3.get(0).getPerson().getLastName());
 	}
 
+	@Test
+	public void testCountTotalElementsAndCalculatePageCount() {
+		// 3. Typisches Web-Muster: COUNT-Abfrage zur Ermittlung der Gesamtseitenanzahl
+		Long totalCount = manager.createQuery("SELECT COUNT(n) FROM User n", Long.class)
+				.getSingleResult();
 
+		assertEquals(7L, totalCount);
 
-	private int incrementFirstResultWithResultCount(TypedQuery<User> createQuery) {
-		return createQuery.getFirstResult() + createQuery.getMaxResults();
+		int pageSize = 3;
+		int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+		assertEquals(3, totalPages);
+	}
+
+	@Test
+	public void testPagingBeyondTotalElementsReturnsEmptyList() {
+		// 4. Randfall: Offset hinter dem letzten Datensatz wirft keine Exception, sondern liefert leere Liste
+		TypedQuery<User> query = manager.createQuery("SELECT n FROM User n ORDER BY n.id", User.class);
+		List<User> result = query.setFirstResult(100).setMaxResults(3).getResultList();
+
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	public void testPagingWithZeroMaxResultsReturnsEmptyList() {
+		// 5. Randfall: setMaxResults(0) liefert 0 Treffer
+		TypedQuery<User> query = manager.createQuery("SELECT n FROM User n ORDER BY n.id", User.class);
+		List<User> result = query.setFirstResult(0).setMaxResults(0).getResultList();
+
+		assertEquals(0, result.size());
 	}
 }

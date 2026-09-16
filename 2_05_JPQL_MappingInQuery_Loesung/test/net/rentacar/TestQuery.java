@@ -1,7 +1,12 @@
 package net.rentacar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import jakarta.persistence.Tuple;
 import net.rentacar.dto.VehicleDTO;
 import net.rentacar.model.*;
 
@@ -41,15 +46,70 @@ public class TestQuery extends AbstractJPATestCase {
 
 	@Test
 	public void testQueryWithMappingInSelect() {
+		// 1. DTO-Konstruktor-Projektion: Unmanaged DTO direkt aus der Query instanziieren
 		VehicleDTO dto = manager
 				.createQuery(
-						"Select new "
+						"SELECT new "
 								+ VehicleDTO.class.getName()
-								+ "(f.model.modell,f.maxKpH) FROM VehicleType f", VehicleDTO.class)
+								+ "(f.model.modell, f.maxKpH) FROM VehicleType f ORDER BY f.model.modell", VehicleDTO.class)
 				.getResultList().get(0);
 
+		assertNotNull(dto);
 		assertTrue(dto instanceof VehicleDTO);
-		assertEquals("Golf", dto.modell);
+		assertEquals("10to", dto.modell);
 		assertEquals(200, dto.maxKph);
+	}
+
+	@Test
+	public void testScalarProjectionReturnsSingleColumnList() {
+		// 2. Skalar-Projektion: Einzelne Spalte direkt als typisierte Liste von Strings laden
+		List<String> brands = manager.createQuery(
+				"SELECT DISTINCT f.model.brand FROM VehicleType f ORDER BY f.model.brand", String.class)
+				.getResultList();
+
+		assertEquals(3, brands.size());
+		assertEquals("BMW", brands.get(0));
+		assertEquals("Mercedes", brands.get(1));
+		assertEquals("VW", brands.get(2));
+	}
+
+	@Test
+	public void testMultipleScalarFieldsReturnObjectArrayList() {
+		// 3. Mehrere Spalten ohne DTO: Liefert List<Object[]>
+		List<Object[]> rows = manager.createQuery(
+				"SELECT f.model.brand, f.hp FROM VehicleType f ORDER BY f.hp DESC", Object[].class)
+				.getResultList();
+
+		assertEquals(3, rows.size());
+		Object[] firstRow = rows.get(0);
+		assertEquals("BMW", firstRow[0]);
+		assertEquals(150L, firstRow[1]);
+	}
+
+	@Test
+	public void testTupleProjectionWithAlias() {
+		// 4. JPA 2.0+ Tuple-Projektion: Typsicherer Zugriff über Spalten-Aliase
+		List<Tuple> tuples = manager.createQuery(
+				"SELECT f.model.brand AS brand, f.hp AS hp FROM VehicleType f ORDER BY f.hp DESC", Tuple.class)
+				.getResultList();
+
+		assertEquals(3, tuples.size());
+		Tuple topVehicle = tuples.get(0);
+		assertEquals("BMW", topVehicle.get("brand", String.class));
+		assertEquals(150L, topVehicle.get("hp", Long.class));
+	}
+
+	@Test
+	public void testDtoProjectionWithFilter() {
+		// 5. DTO-Projektion kombiniert mit WHERE-Filter und Parameterbindung
+		List<VehicleDTO> powerfulVehicles = manager.createQuery(
+				"SELECT new " + VehicleDTO.class.getName()
+						+ "(f.model.modell, f.maxKpH) FROM VehicleType f WHERE f.hp > :minHp", VehicleDTO.class)
+				.setParameter("minHp", 130)
+				.getResultList();
+
+		assertEquals(1, powerfulVehicles.size());
+		assertEquals("323", powerfulVehicles.get(0).modell);
+		assertEquals(220, powerfulVehicles.get(0).maxKph);
 	}
 }

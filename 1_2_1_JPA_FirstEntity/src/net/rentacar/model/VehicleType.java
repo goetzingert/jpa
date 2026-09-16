@@ -8,21 +8,22 @@ import java.io.ObjectOutputStream;
 
 public class VehicleType {
 
-	private long id;
+	private String id;
 	private String brand;
 	private String modell;
 	private long hp = 100;
-	private long maxKpH;
+	private long maxKph;
 
-	//Leerer DEFAULT KONSTRUKTOR muss da sein
+	// Leerer DEFAULT KONSTRUKTOR muss fuer JPA vorhanden sein
 	public VehicleType() {
 	}
 
-	public VehicleType(String brand, String modell, long hp, long maxKpH) {
+	public VehicleType(String id, String brand, String modell, long hp, long maxKph) {
+		this.id = id;
 		this.brand = brand;
 		this.modell = modell;
 		this.hp = hp;
-		this.maxKpH = maxKpH;
+		this.maxKph = maxKph;
 	}
 
 	public void setBrand(String brand) {
@@ -49,15 +50,15 @@ public class VehicleType {
 		this.hp = hp;
 	}
 
-	public long getMaxKpH() {
-		return maxKpH;
+	public long getMaxKph() {
+		return maxKph;
 	}
 
-	public void setMaxKpH(long maxKph) {
-		this.maxKpH = maxKph;
+	public void setMaxKph(long maxKph) {
+		this.maxKph = maxKph;
 	}
 
-	public long getId() {
+	public String getId() {
 		return this.id;
 	}
 

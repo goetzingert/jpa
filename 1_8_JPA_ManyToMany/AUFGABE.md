@@ -1,12 +1,12 @@
-# Übung: 1_8 Many-to-Many-Beziehung
+# Übung: 1_8 Many-to-Many-Beziehung & JoinTable
 
 ## Lernziel
 
-Eine N:M-Beziehung (`@ManyToMany`) zwischen Entitäten (`Vehicle` und `Shop` als `locationHistory`) abbilden, die Join-Tabelle (`@JoinTable`, `joinColumns`, `inverseJoinColumns`) explizit konfigurieren und Kaskadierungsentscheidungen (`CascadeType.PERSIST`, `CascadeType.MERGE`) verstehen.
+Eine N:M-Beziehung (`@ManyToMany`) zwischen Entitäten (`Vehicle` und `Shop` als `locationHistory`) abbilden, die Join-Tabelle (`@JoinTable`, `joinColumns`, `inverseJoinColumns`) explizit konfigurieren, Kaskadierungsentscheidungen treffen und Assoziationsänderungen in Verbindungstabellen nachvollziehen.
 
 ## Ausgangszustand
 
-In `src/net/rentacar/model/Vehicle.java` fehlt das Mapping für die Standort-Historie (`locationHistory`). Der Test `test/net/rentacar/TestConnection.java` kann die N:M-Beziehung (`testManyToManyVehicle`) nicht überprüfen.
+In `src/net/rentacar/model/Vehicle.java` fehlt das Mapping für die Standort-Historie (`locationHistory`). Der Test `test/net/rentacar/TestConnection.java` kann die N:M-Beziehung (`testManyToManyLocationHistory`) nicht überprüfen.
 
 ## Aufgabe
 
@@ -29,6 +29,15 @@ Bearbeite `src/net/rentacar/model/Vehicle.java` und `test/net/rentacar/TestConne
 3. **Historie bei Standortwechsel pflegen:**
    - Ergänze in `setLocation(Shop location)`: Wird ein neues Fahrzeug einem Standort zugewiesen, wird der vorherige Standort automatisch in `locationHistory` übernommen.
 
+4. **Testmethoden implementieren (`TestConnection.java`):**
+   - `testFindVehicle()`: Fahrzeug-Laden prüfen.
+   - `testOneToManyOfShop()`: 1:N-Bestand am Standort prüfen.
+   - `testManyToOneVehicleLocation()`: Aktuellen Standort prüfen.
+   - `testManyToManyLocationHistory()`: N:M-Historie verifizieren.
+   - `testAddingMultipleLocationsToHistory()`: Mehrfache Standortwechsel dokumentieren und Historie prüfen.
+   - `testMultipleVehiclesSharingSameLocationInHistory()`: N:M-Verknüpfung mehrerer Fahrzeuge auf dieselben Standorte und JPQL-Join testen.
+   - `testRemovingHistoryEntryDeletesOnlyJoinTableRow()`: Prüfen, dass das Leeren der Historie nur die Zeilen in `location_history` entfernt, die `Shop`-Entitäten aber intakt bleiben.
+
 ## Test und Beobachtung
 
 Führe den Test aus:
@@ -43,15 +52,16 @@ Führe den Test aus:
 
 ## Erfolgskriterium
 
-Der Test `test/net/rentacar/TestConnection.java` läuft mit allen 8 Testmethoden (insb. `testManyToManyVehicle`) erfolgreich durch:
+Der Test `test/net/rentacar/TestConnection.java` läuft mit allen 7 Testmethoden erfolgreich durch:
 ```text
-[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0
 ```
 
 ## Reflexion
 
 1. Wann ist bei einer N:M-Beziehung eine unidirektionale Abbildung ausreichend und wann empfiehlt sich eine bidirektionale Modellierung?
-2. Warum sollte `CascadeType.REMOVE` bei `@ManyToMany`-Beziehungen in der Regel vermieden werden?
+2. Warum sollte `CascadeType.REMOVE` bei `@ManyToMany`-Beziehungen in der Regel zwingend vermieden werden?
+3. Wann sollte eine `@ManyToMany`-Beziehung in zwei `@ManyToOne`-Beziehungen mit einer eigenständigen Entity für die Verbindungstabelle aufgelöst werden?
 
 ## Lösungshinweis
 

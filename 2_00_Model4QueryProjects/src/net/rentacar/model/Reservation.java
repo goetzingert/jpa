@@ -14,13 +14,18 @@ import jakarta.persistence.TemporalType;
 @Entity
 @Table(name = "tbl_Reservation")
 @NamedQueries({
-	@NamedQuery(name= Reservation.FIND_BY_START_Shop, query= Reservation.FIND_BY_START_Shop)
+	@NamedQuery(name = Reservation.FIND_BY_START_Shop, query = Reservation.FIND_BY_START_Shop),
+	@NamedQuery(name = Reservation.FIND_BY_START_SHOP_AND_MIN_PRICE, query = "SELECT r FROM Reservation r WHERE r.startShop = :Shop AND r.price >= :minPrice"),
+	@NamedQuery(name = Reservation.COUNT_BY_START_SHOP, query = "SELECT COUNT(r) FROM Reservation r WHERE r.startShop = :Shop")
 })
 public class Reservation extends AbstractBusinessObject {
 	
 	public static final String PARAM_Shop = "Shop";
+	public static final String PARAM_MIN_PRICE = "minPrice";
 
 	public static final String FIND_BY_START_Shop = "SELECT r FROM Reservation r WHERE r.startShop = :" + PARAM_Shop;
+	public static final String FIND_BY_START_SHOP_AND_MIN_PRICE = "Reservation.findByStartShopAndMinPrice";
+	public static final String COUNT_BY_START_SHOP = "Reservation.countByStartShop";
 
 	@ManyToOne(optional = false)
 	private Vehicle vehicle;

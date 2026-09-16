@@ -1,15 +1,12 @@
 package net.rentacar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import net.rentacar.model.*;
 
 import org.junit.jupiter.api.Test;
@@ -75,19 +72,81 @@ public class TestQuery extends AbstractJPATestCase {
 
 	@Test
 	public void testSubQuery() {
-		List resultList = manager
+		// 1. Korrelierte Subquery in WHERE: Kunden mit Reservierungssumme > 200
+		List<Customer> resultList = manager
 				.createQuery(
-						"Select k FROM Customer k WHERE 200 < (Select sum(res.price) from k.reservations res)")
+						"SELECT k FROM Customer k WHERE (SELECT SUM(res.price) FROM k.reservations res) > 200 ORDER BY k.person.lastName", Customer.class)
 				.getResultList();
+
 		assertEquals(2, resultList.size());
+		assertEquals("Mueller", resultList.get(0).getPerson().getLastName());
+		assertEquals("Mustermann", resultList.get(1).getPerson().getLastName());
 	}
 
 	@Test
 	public void returnsNoCustomerAboveAnUnreachableTotal() {
-		List<?> resultList = manager.createQuery(
-				"Select k FROM Customer k WHERE 1000 < (Select sum(res.price) from k.reservations res)")
+		// 2. Subquery mit unerreichbarem Schwellenwert: Liefert leere Liste
+		List<Customer> resultList = manager.createQuery(
+				"SELECT k FROM Customer k WHERE (SELECT SUM(res.price) FROM k.reservations res) > 1000", Customer.class)
 				.getResultList();
 
 		assertTrue(resultList.isEmpty());
+	}
+
+	@Test
+	public void testSubqueryWithExistsOperator() {
+		// 3. EXISTS-Operator: Finde alle Kunden, die mindestens eine hochpreisige Reservierung (>= 400 GE) haben
+		List<Customer> highSpenders = manager.createQuery(
+				"SELECT k FROM Customer k WHERE EXISTS (SELECT res FROM k.reservations res WHERE res.price >= 400)", Customer.class)
+				.getResultList();
+
+		assertEquals(1, highSpenders.size());
+		assertEquals("Mustermann", highSpenders.get(0).getPerson().getLastName());
+	}
+
+	@Test
+	public void testSubqueryWithNotExistsOperator() {
+		// 4. NOT EXISTS-Operator: Finde alle Kunden ohne jegliche Reservierung
+		List<Customer> inactiveCustomers = manager.createQuery(
+				"SELECT k FROM Customer k WHERE NOT EXISTS (SELECT res FROM k.reservations res)", Customer.class)
+				.getResultList();
+
+		// Von 7 Kunden haben 2 reserviert -> 5 ohne Reservierung
+		assertEquals(5, inactiveCustomers.size());
+	}
+
+	@Test
+	public void testSubqueryWithInOperator() {
+		// 5. IN-Subquery: Finde Fahrzeuge, deren Typ zu den leistungsstarken Typen (> 130 PS) gehört
+		List<Vehicle> vehicles = manager.createQuery(
+				"SELECT v FROM Vehicle v WHERE v.type IN (SELECT t FROM VehicleType t WHERE t.hp > 130)", Vehicle.class)
+				.getResultList();
+
+		assertEquals(1, vehicles.size());
+		assertEquals("BMW", vehicles.get(0).getType().getModel().getBrand());
+	}
+
+	@Test
+	public void testSubqueryWithAllOperator() {
+		// 6. ALL-Quantor: Finde den Fahrzeugtyp mit der höchsten PS-Zahl (größer-gleich alle anderen Typen)
+		List<VehicleType> maxHpTypes = manager.createQuery(
+				"SELECT v FROM VehicleType v WHERE v.hp >= ALL (SELECT t.hp FROM VehicleType t)", VehicleType.class)
+				.getResultList();
+
+		assertEquals(1, maxHpTypes.size());
+		assertEquals("BMW", maxHpTypes.get(0).getModel().getBrand());
+		assertEquals(150, maxHpTypes.get(0).getHp());
+	}
+
+	@Test
+	public void testScalarSubqueryInSelectClause() {
+		// 7. Skalar-Subquery im SELECT-Teil: Zähle Reservierungen pro Kunde direkt in der Projektion
+		List<Object[]> customerCounts = manager.createQuery(
+				"SELECT k.person.lastName, (SELECT COUNT(res) FROM k.reservations res) FROM Customer k WHERE k.person.lastName = 'Mustermann'", Object[].class)
+				.getResultList();
+
+		assertEquals(1, customerCounts.size());
+		assertEquals("Mustermann", customerCounts.get(0)[0]);
+		assertEquals(3L, customerCounts.get(0)[1]);
 	}
 }

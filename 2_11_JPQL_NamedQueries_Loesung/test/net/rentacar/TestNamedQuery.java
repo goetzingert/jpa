@@ -1,10 +1,14 @@
 package net.rentacar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 
 import net.rentacar.model.*;
 
@@ -40,7 +44,7 @@ public class TestNamedQuery extends AbstractJPATestCase {
 		manager.persist(new Customer(new Person("Herbert", "Schmitt")));
 		manager.persist(new Customer(new Person("Ingo", "Meyer")));
 		manager.persist(new Customer(new Person("Mathias", "Mayer")));
-		manager.persist(new Customer(new Person("Michael", "Anst�dt")));
+		manager.persist(new Customer(new Person("Michael", "Anstaedt")));
 		manager.persist(new Customer(new Person("Ralf", "Gross")));
 		this.createReservierung(customer, vehicle, stuttgart, 100,
 				new GregorianCalendar(2007, 12, 18, 12, 0),
@@ -72,10 +76,66 @@ public class TestNamedQuery extends AbstractJPATestCase {
 
 	@Test
 	public void testCallNamedQuery() {
+		// 1. Einfacher Aufruf einer @NamedQuery über Konstantennamen
 		Query namedQuery = manager
 				.createNamedQuery(Reservation.FIND_BY_START_Shop);
 		namedQuery.setParameter(Reservation.PARAM_Shop, muenchen);
 		assertEquals(2, namedQuery.getResultList().size());
+	}
+
+	@Test
+	public void testTypedNamedQuery() {
+		// 2. Typsichere Ausführung mit TypedQuery<Reservation>
+		TypedQuery<Reservation> typedQuery = manager.createNamedQuery(
+				Reservation.FIND_BY_START_Shop, Reservation.class);
+		typedQuery.setParameter(Reservation.PARAM_Shop, muenchen);
+
+		List<Reservation> reservations = typedQuery.getResultList();
+		assertEquals(2, reservations.size());
+		assertNotNull(reservations.get(0).getVehicle());
+	}
+
+	@Test
+	public void testNamedQueryWithMultipleParameters() {
+		// 3. Named Query mit mehreren Parametern (Standort und Mindestpreis)
+		List<Reservation> expensiveMuenchenReservations = manager.createNamedQuery(
+				Reservation.FIND_BY_START_SHOP_AND_MIN_PRICE, Reservation.class)
+				.setParameter(Reservation.PARAM_Shop, muenchen)
+				.setParameter(Reservation.PARAM_MIN_PRICE, 200.0f)
+				.getResultList();
+
+		assertEquals(1, expensiveMuenchenReservations.size());
+		assertEquals(440.0f, expensiveMuenchenReservations.get(0).getPrice(), 0.01f);
+	}
+
+	@Test
+	public void testNamedQueryScalarCount() {
+		// 4. Skalare Zählabfrage via Named Query
+		Long count = manager.createNamedQuery(
+				Reservation.COUNT_BY_START_SHOP, Long.class)
+				.setParameter(Reservation.PARAM_Shop, muenchen)
+				.getSingleResult();
+
+		assertEquals(2L, count);
+	}
+
+	@Test
+	public void testNamedQueryDefinedInOrmXml() {
+		// 5. Externe Named Query aus orm.xml aufrufen (ohne Code-Änderung an Entities)
+		List<Shop> emptyShops = manager.createNamedQuery(
+				"Shop.findWithNoVehicles", Shop.class)
+				.getResultList();
+
+		// Koeln und Muenchen haben aktuell keine Fahrzeuge im Carpool (Stuttgart hat 2)
+		assertEquals(2, emptyShops.size());
+	}
+
+	@Test
+	public void testUndefinedNamedQueryThrowsException() {
+		// 6. Randfall: Nicht existierende Named Query löst IllegalArgumentException aus
+		assertThrows(IllegalArgumentException.class, () -> {
+			manager.createNamedQuery("Reservation.nonExistentQuery");
+		});
 	}
 
 }

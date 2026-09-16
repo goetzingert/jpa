@@ -1,30 +1,37 @@
-# Übung: 2_11 Named Queries mit @NamedQuery
+# Übung: 2_11 Named Queries mit @NamedQuery und orm.xml
 
 ## Lernziel
 
-Wiederverwendbare, vorkompilierte und statisch validierte Abfragen mit `@NamedQuery` (und `@NamedQueries`) an Entity-Klassen deklarieren, Abfrage-Konstanten für refactoringsichere Aufrufe definieren und mit `createNamedQuery()` ausführen.
+Wiederverwendbare, vorkompilierte und statisch validierte Abfragen mit `@NamedQuery` (und `@NamedQueries`) an Entity-Klassen deklarieren, Abfrage- und Parameter-Konstanten für refactoringsichere Aufrufe definieren, typsichere `TypedQuery<T>`-Ausführungen verwenden, skalare Aggregatabfragen durchführen, Named Queries extern in `orm.xml` definieren und die Fehlerbehandlung bei ungültigen Query-Namen (`IllegalArgumentException`) verstehen.
 
 ## Ausgangszustand
 
-In `src/net/rentacar/model/Reservation.java` fehlt die `@NamedQuery`-Deklaration für die Suche nach Start-Shop. In `test/net/rentacar/TestNamedQuery.java` schlägt der Test `testCallNamedQuery()` mit einem Fehler (`IllegalArgumentException: No query defined for that name`) fehl.
+In `test/net/rentacar/TestNamedQuery.java` sind die Testmethoden noch unvollständig.
 
 ## Aufgabe
 
-Bearbeite `src/net/rentacar/model/Reservation.java` und `test/net/rentacar/TestNamedQuery.java`:
+Bearbeite `test/net/rentacar/TestNamedQuery.java`:
 
-1. **Named Query an der Entity annotieren:**
-   - Annotiere `Reservation` mit `@NamedQuery`:
-     ```java
-     @NamedQuery(
-         name = Reservation.FIND_BY_START_Shop,
-         query = "SELECT r FROM Reservation r WHERE r.startShop = :shop"
-     )
-     ```
-   - Verwende die Konstanten `Reservation.FIND_BY_START_Shop` und `Reservation.PARAM_Shop`.
+1. **Einfache Named Query aufrufen (`testCallNamedQuery`):**
+   - Erzeuge die Query mit `manager.createNamedQuery(Reservation.FIND_BY_START_Shop)`.
+   - Binde den Parameter `Reservation.PARAM_Shop` an die `Shop`-Instanz `muenchen` und prüfe die 2 Treffer.
 
-2. **Named Query aufrufen:**
-   - In `testCallNamedQuery()`: Erzeuge die Query mit `manager.createNamedQuery(Reservation.FIND_BY_START_Shop)`.
-   - Setze den Parameter `shop` auf die `Shop`-Instanz `muenchen` und führe die Abfrage aus.
+2. **Typsichere Named Query (`testTypedNamedQuery`):**
+   - Führe die Abfrage typsicher mit `manager.createNamedQuery(Reservation.FIND_BY_START_Shop, Reservation.class)` aus.
+
+3. **Named Query mit mehreren Parametern (`testNamedQueryWithMultipleParameters`):**
+   - Rufe `Reservation.FIND_BY_START_SHOP_AND_MIN_PRICE` mit `PARAM_Shop = muenchen` und `PARAM_MIN_PRICE = 200.0f` auf.
+   - Prüfe die gefundene Reservierung mit Preis `440.0`.
+
+4. **Skalare Zählabfrage via Named Query (`testNamedQueryScalarCount`):**
+   - Führe `Reservation.COUNT_BY_START_SHOP` mit Rückgabetyp `Long.class` aus.
+
+5. **Externe Named Query aus `orm.xml` (`testNamedQueryDefinedInOrmXml`):**
+   - Rufe die in `src/META-INF/orm.xml` deklarierte Named Query `"Shop.findWithNoVehicles"` auf.
+   - Prüfe die 2 leeren Standorte (Köln und München).
+
+6. **Fehlerbehandlung bei ungültigem Query-Namen (`testUndefinedNamedQueryThrowsException`):**
+   - Prüfe mit `assertThrows`, dass ein Aufruf von `manager.createNamedQuery("Reservation.nonExistentQuery")` eine `IllegalArgumentException` auslöst.
 
 ## Test und Beobachtung
 
@@ -39,16 +46,16 @@ Führe den Test aus:
 
 ## Erfolgskriterium
 
-Der Test `test/net/rentacar/TestNamedQuery.java` läuft erfolgreich durch:
+Der Test `test/net/rentacar/TestNamedQuery.java` läuft mit allen 6 Testmethoden erfolgreich durch:
 ```text
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
 ```
-Für den Standort München werden genau 2 Reservierungen gefunden.
 
 ## Reflexion
 
 1. Welchen Vorteil bietet die Validierung von `@NamedQuery` beim Start der `EntityManagerFactory` gegenüber dynamischen Queries via `manager.createQuery()`?
 2. Warum empfiehlt es sich, die Query-Namen und Parameternamen als `public static final String`-Konstanten in der jeweiligen Entity-Klasse zu bündeln?
+3. Wann ist die Definition von Named Queries in `orm.xml` gegenüber Code-Annotationen vorzuziehen?
 
 ## Lösungshinweis
 

@@ -1,9 +1,14 @@
 package net.rentacar.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -12,23 +17,30 @@ import jakarta.persistence.Table;
 public class Vehicle {
 
 	@Id
-	@GeneratedValue
-	private long id;
+	private String id;
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private VehicleType type;
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Shop location;
 
+	// TODO: @ManyToMany und @JoinTable fuer locationHistory konfigurieren
+	private List<Shop> locationHistory = new ArrayList<Shop>();
+
 	public Vehicle() {
 	}
 
-	public Vehicle(Shop location, VehicleType type) {
+	public Vehicle(String id, Shop location, VehicleType type) {
+		this.id = id;
 		setLocation(location);
 		this.type = type;
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public void setType(VehicleType type) {
@@ -40,11 +52,25 @@ public class Vehicle {
 	}
 
 	public void setLocation(Shop location) {
+		if (location != null) {
+			location.getVehicles().add(this);
+		}
+		if (this.location != null) {
+			this.locationHistory.add(this.location);
+			this.location.getVehicles().remove(this);
+		}
 		this.location = location;
-		this.location.getVehicles().add(this);
 	}
 
 	public Shop getLocation() {
 		return location;
+	}
+
+	public List<Shop> getLocationHistory() {
+		return locationHistory;
+	}
+
+	public void setLocationHistory(List<Shop> locationHistory) {
+		this.locationHistory = locationHistory;
 	}
 }

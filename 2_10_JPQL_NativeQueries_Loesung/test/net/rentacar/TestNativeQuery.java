@@ -2,6 +2,7 @@ package net.rentacar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -46,34 +47,86 @@ public class TestNativeQuery extends AbstractJPATestCase {
 
 	@Test
 	public void testNativeQueryOfKunde() {
-		// TODO Lade alle Kunden- und Personendaten mittels Native Query
+		// 1. Native SQL direkt auf Entity-Klasse mappen (liefert gemanagte Customer-Entities)
+		List<Customer> customers = manager.createNativeQuery(
+				"SELECT * FROM tbl_User WHERE DTYPE = 'Customer' ORDER BY id", Customer.class)
+				.getResultList();
+
+		assertEquals(7, customers.size());
+		assertNotNull(customers.get(0).getPerson());
+		assertEquals("Hans", customers.get(0).getPerson().getFirstName());
 	}
 
 	@Test
 	public void testNativeQueryOfVehicleUndItem() {
-		// TODO Lade alle Vehicles mit brand BMW und zugeh�rige Vehicle
-		// mittels Native Query und ResultSetMapping
+		// 2. Komplexe relationale Joins über Vererbungs- und Assoziationstabellen mit Native SQL
 		List<?> vehicleTypes = manager.createNativeQuery(
-				"Select t.id, t.modell, t.brand, t.HP, t.maxKph, p.doors, l.maxLoad "
+				"SELECT t.id, t.modell, t.brand, t.HP, t.maxKph, p.doors, l.maxLoad "
 						+ "FROM tbl_VehicleType t LEFT OUTER JOIN TBL_Car p ON t.id = p.id LEFT OUTER JOIN TBL_TRUCK l ON t.id = l.id")
 				.getResultList();
 		assertFalse(vehicleTypes.isEmpty());
+		assertEquals(3, vehicleTypes.size());
 
 		List<?> resultList = manager.createNativeQuery(
-				"Select t.id, t.modell, t.brand, t.HP, t.maxKph, p.doors, l.maxLoad, i.id AS item_id, i.type_id, i.LOCATION_ID "
+				"SELECT t.id, t.modell, t.brand, t.HP, t.maxKph, p.doors, l.maxLoad, i.id AS item_id, i.type_id, i.LOCATION_ID "
 						+ "FROM tbl_VehicleType t LEFT OUTER JOIN TBL_Car p ON t.id = p.id LEFT OUTER JOIN TBL_TRUCK l ON t.id = l.id JOIN tbl_Vehicle i ON i.type_id = t.id")
 				.getResultList();
 		assertFalse(resultList.isEmpty());
+		assertEquals(2, resultList.size());
 	}
 
 	@Test
 	public void nativeQuerySupportsBoundParameters() {
+		// 3. Positions-Parameter (?1) in Native Queries verwenden
 		Number count = (Number) manager.createNativeQuery(
 				"SELECT COUNT(*) FROM tbl_VehicleType WHERE HP > ?1")
 				.setParameter(1, 130)
 				.getSingleResult();
 
 		assertEquals(1, count.intValue());
+	}
+
+	@Test
+	public void testNativeQueryScalarAggregates() {
+		// 4. Skalare Aggregatfunktionen über Native SQL ausführen
+		Object[] agg = (Object[]) manager.createNativeQuery(
+				"SELECT COUNT(*), AVG(HP), MAX(maxKph), MIN(HP) FROM tbl_VehicleType")
+				.getSingleResult();
+
+		assertEquals(3, ((Number) agg[0]).intValue());
+		assertEquals(130.0, ((Number) agg[1]).doubleValue(), 0.01);
+		assertEquals(220, ((Number) agg[2]).intValue());
+		assertEquals(120, ((Number) agg[3]).intValue());
+	}
+
+	@Test
+	public void testNativeQueryPagination() {
+		// 5. Deterministisches Paging mit setFirstResult und setMaxResults auf Native Queries
+		List<?> page = manager.createNativeQuery(
+				"SELECT * FROM tbl_User WHERE DTYPE = 'Customer' ORDER BY id")
+				.setFirstResult(2)
+				.setMaxResults(3)
+				.getResultList();
+
+		assertEquals(3, page.size());
+	}
+
+	@Test
+	public void testNativeQueryDmlUpdateAndClearSync() {
+		// 6. Native DML-Updates (executeUpdate) und Notwendigkeit von manager.clear()
+		int updated = manager.createNativeQuery(
+				"UPDATE tbl_VehicleType SET HP = HP + 10 WHERE brand = 'BMW'")
+				.executeUpdate();
+
+		assertEquals(1, updated);
+
+		// Persistence Context leeren, damit die geänderten DB-Werte frisch geladen werden
+		manager.clear();
+
+		VehicleType bmw = manager.createQuery(
+				"SELECT v FROM VehicleType v WHERE v.model.brand = 'BMW'", VehicleType.class)
+				.getSingleResult();
+		assertEquals(160, bmw.getHp());
 	}
 
 }

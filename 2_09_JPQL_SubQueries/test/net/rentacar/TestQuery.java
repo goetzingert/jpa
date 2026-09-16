@@ -1,9 +1,11 @@
 package net.rentacar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import net.rentacar.model.*;
 
@@ -68,9 +70,74 @@ public class TestQuery extends AbstractJPATestCase {
 	}
 
 	
-	@Test public void testSubQuery()
-	{
-		//TODO selektiere alle Kunden die mehr als 200 GE f¸r Reservierungen ausgegeben haben
+	@Test
+	public void testSubQuery() {
+		// 1. Korrelierte Subquery in WHERE: Selektiere alle Kunden, die mehr als 200 GE für Reservierungen ausgegeben haben
+		List<Customer> resultList = null; // TODO: "SELECT k FROM Customer k WHERE (SELECT SUM(res.price) FROM k.reservations res) > 200 ORDER BY k.person.lastName"
+
+		assertNotNull(resultList);
+		assertEquals(2, resultList.size());
+		assertEquals("Mueller", resultList.get(0).getPerson().getLastName());
+		assertEquals("Mustermann", resultList.get(1).getPerson().getLastName());
 	}
 
+	@Test
+	public void returnsNoCustomerAboveAnUnreachableTotal() {
+		// 2. Subquery mit unerreichbarem Schwellenwert: Liefert leere Liste
+		List<Customer> resultList = null; // TODO: Subquery mit Schwellenwert 1000
+
+		assertNotNull(resultList);
+		assertTrue(resultList.isEmpty());
+	}
+
+	@Test
+	public void testSubqueryWithExistsOperator() {
+		// 3. EXISTS-Operator: Finde alle Kunden, die mindestens eine hochpreisige Reservierung (>= 400 GE) haben
+		List<Customer> highSpenders = null; // TODO: "SELECT k FROM Customer k WHERE EXISTS (SELECT res FROM k.reservations res WHERE res.price >= 400)"
+
+		assertNotNull(highSpenders);
+		assertEquals(1, highSpenders.size());
+		assertEquals("Mustermann", highSpenders.get(0).getPerson().getLastName());
+	}
+
+	@Test
+	public void testSubqueryWithNotExistsOperator() {
+		// 4. NOT EXISTS-Operator: Finde alle Kunden ohne jegliche Reservierung
+		List<Customer> inactiveCustomers = null; // TODO: "SELECT k FROM Customer k WHERE NOT EXISTS (SELECT res FROM k.reservations res)"
+
+		assertNotNull(inactiveCustomers);
+		assertEquals(5, inactiveCustomers.size());
+	}
+
+	@Test
+	public void testSubqueryWithInOperator() {
+		// 5. IN-Subquery: Finde Fahrzeuge, deren Typ zu den leistungsstarken Typen (> 130 PS) gehört
+		List<Vehicle> vehicles = null; // TODO: "SELECT v FROM Vehicle v WHERE v.type IN (SELECT t FROM VehicleType t WHERE t.hp > 130)"
+
+		assertNotNull(vehicles);
+		assertEquals(1, vehicles.size());
+		assertEquals("BMW", vehicles.get(0).getType().getModel().getBrand());
+	}
+
+	@Test
+	public void testSubqueryWithAllOperator() {
+		// 6. ALL-Quantor: Finde den Fahrzeugtyp mit der höchsten PS-Zahl (größer-gleich alle anderen Typen)
+		List<VehicleType> maxHpTypes = null; // TODO: "SELECT v FROM VehicleType v WHERE v.hp >= ALL (SELECT t.hp FROM VehicleType t)"
+
+		assertNotNull(maxHpTypes);
+		assertEquals(1, maxHpTypes.size());
+		assertEquals("BMW", maxHpTypes.get(0).getModel().getBrand());
+		assertEquals(150, maxHpTypes.get(0).getHp());
+	}
+
+	@Test
+	public void testScalarSubqueryInSelectClause() {
+		// 7. Skalar-Subquery im SELECT-Teil: Zähle Reservierungen pro Kunde direkt in der Projektion
+		List<Object[]> customerCounts = null; // TODO: "SELECT k.person.lastName, (SELECT COUNT(res) FROM k.reservations res) FROM Customer k WHERE k.person.lastName = 'Mustermann'" mit Object[].class
+
+		assertNotNull(customerCounts);
+		assertEquals(1, customerCounts.size());
+		assertEquals("Mustermann", customerCounts.get(0)[0]);
+		assertEquals(3L, customerCounts.get(0)[1]);
+	}
 }
