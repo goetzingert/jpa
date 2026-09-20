@@ -157,6 +157,7 @@ Für Trainer und Teilnehmer stehen umfassende Nachschlagewerke und Foliensätze 
 - **[JPA_CHEAT_SHEET.md](JPA_CHEAT_SHEET.md):** Kompaktes Syntax- und Annotations-Nachschlagewerk (Mappings, JPQL, Lifecycle, Criteria API).
 - **[TROUBLESHOOTING_UND_BEST_PRACTICES.md](TROUBLESHOOTING_UND_BEST_PRACTICES.md):** Umfassender Praxis-Guide zu typischen Fehlern (`LazyInitializationException`, N+1-Problem, Optimistic Locking, Derby-Locks, equals/hashCode).
 - **[QUIZ_UND_REFLEXIONS_LOESUNGEN.md](QUIZ_UND_REFLEXIONS_LOESUNGEN.md):** Vollständige Musterlösungen zu allen Reflexionsfragen der Übungen und Folien-Quizzes.
+- **[VERBESSERUNGSIDEEN.md](VERBESSERUNGSIDEEN.md):** Strukturierte Ideen, Modernisierungspotenziale (JPA 3.1 / Hibernate 6) und Roadmap für zukünftige Übungserweiterungen.
 - **PowerPoint-Präsentationen (16:9 Format):**
   - `JPA_Cheat_Sheet.pptx` (23 Folien als visuelle Syntax- & Lifecycle-Referenz)
   - `JPA_Troubleshooting_und_Best_Practices.pptx` (22 Folien für Vorträge und Troubleshooting-Sessions)
