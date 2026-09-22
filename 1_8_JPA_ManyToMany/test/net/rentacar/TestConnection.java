@@ -17,15 +17,25 @@ import org.junit.jupiter.api.Test;
 
 public class TestConnection extends AbstractJPATestCase {
 
+	private VehicleType vehicleType;
+	private Shop muenchen;
+	private Shop stuttgart;
+	private Vehicle vehicle;
+	private User user;
+
 	@Override
 	public void setUp() throws Exception {
-		VehicleType vehicleType = new VehicleType("1", new Model("VW", "Golf"), 120, 200);
+		vehicleType = new VehicleType(new Model("VW", "Golf"), 120, 200);
 		manager.persist(vehicleType);
-		Shop shop = new Shop("1", "Muenchen");
-		Vehicle vehicle = new Vehicle("1", shop, vehicleType);
-		vehicle.setLocation(new Shop("2", "Stuttgart"));
+		muenchen = new Shop("Muenchen");
+		stuttgart = new Shop("Stuttgart");
+		manager.persist(muenchen);
+		manager.persist(stuttgart);
+		vehicle = new Vehicle(muenchen, vehicleType);
+		vehicle.setLocation(stuttgart);
 		manager.persist(vehicle);
-		manager.persist(new User("1", new Person("1", "Hans", "Mustermann")));
+		user = new User(new Person("Hans", "Mustermann"));
+		manager.persist(user);
 		manager.flush();
 		manager.clear();
 	}
@@ -33,13 +43,13 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testFindVehicle() {
 		// 1. Fahrzeug laden
-		assertNotNull(manager.find(VehicleType.class, "1").getId());
+		assertNotNull(manager.find(VehicleType.class, vehicleType.getId()).getId());
 	}
 
 	@Test
 	public void testOneToManyOfShop() {
 		// 2. 1:N-Bestand am aktuellen Standort prüfen (Stuttgart hat 1 Fahrzeug)
-		Shop shop = manager.find(Shop.class, "2");
+		Shop shop = manager.find(Shop.class, stuttgart.getId());
 		assertNotNull(shop);
 		assertTrue(shop.getVehicles().size() > 0);
 	}
@@ -47,39 +57,39 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testManyToOneVehicleLocation() {
 		// 3. Aktuellen Standort laden
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
-		assertNotNull(vehicle.getLocation());
-		assertEquals("Stuttgart", vehicle.getLocation().getLocation());
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
+		assertNotNull(loadedVehicle.getLocation());
+		assertEquals("Stuttgart", loadedVehicle.getLocation().getLocation());
 	}
 
 	@Test
 	public void testManyToManyLocationHistory() {
 		// 4. N:M-Historie prüfen (München muss in der locationHistory sein)
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
 		// TODO: Prüfen, dass getLocationHistory() nicht null ist, 1 Element enthält und Standort "Muenchen" ist
-		assertNotNull(vehicle.getLocationHistory());
-		assertEquals(1, vehicle.getLocationHistory().size());
-		assertEquals("Muenchen", vehicle.getLocationHistory().get(0).getLocation());
+		assertNotNull(loadedVehicle.getLocationHistory());
+		assertEquals(1, loadedVehicle.getLocationHistory().size());
+		assertEquals("Muenchen", loadedVehicle.getLocationHistory().get(0).getLocation());
 	}
 
 	@Test
 	public void testAddingMultipleLocationsToHistory() {
 		// 5. Weitere Standortwechsel dokumentieren
-		Shop berlin = new Shop("3", "Berlin");
-		Shop hamburg = new Shop("4", "Hamburg");
+		Shop berlin = new Shop("Berlin");
+		Shop hamburg = new Shop("Hamburg");
 		manager.persist(berlin);
 		manager.persist(hamburg);
 
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
 		
 		// TODO: vehicle.setLocation(berlin) und anschließend vehicle.setLocation(hamburg) aufrufen
-		vehicle.setLocation(berlin);
-		vehicle.setLocation(hamburg);
+		loadedVehicle.setLocation(berlin);
+		loadedVehicle.setLocation(hamburg);
 
 		manager.flush();
 		manager.clear();
 
-		Vehicle reloaded = manager.find(Vehicle.class, "1");
+		Vehicle reloaded = manager.find(Vehicle.class, vehicle.getId());
 		assertEquals("Hamburg", reloaded.getLocation().getLocation());
 		// Historie enthält: Muenchen (aus setUp), Stuttgart, Berlin
 		assertEquals(3, reloaded.getLocationHistory().size());
@@ -88,12 +98,12 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testMultipleVehiclesSharingSameLocationInHistory() {
 		// 6. Echtes N:M-Szenario: Mehrere Fahrzeuge teilen dieselbe historische Station
-		Shop koeln = new Shop("5", "Koeln");
+		Shop koeln = new Shop("Koeln");
 		manager.persist(koeln);
 
-		VehicleType type = manager.find(VehicleType.class, "1");
-		Vehicle vehicle2 = new Vehicle("2", koeln, type);
-		Shop nuernberg = new Shop("6", "Nuernberg");
+		VehicleType type = manager.find(VehicleType.class, vehicleType.getId());
+		Vehicle vehicle2 = new Vehicle(koeln, type);
+		Shop nuernberg = new Shop("Nuernberg");
 		manager.persist(nuernberg);
 		vehicle2.setLocation(nuernberg);
 		manager.persist(vehicle2);
@@ -108,22 +118,22 @@ public class TestConnection extends AbstractJPATestCase {
 				.getResultList();
 
 		assertEquals(1, vehiclesWithHistory.size());
-		assertEquals("2", vehiclesWithHistory.get(0).getId());
+		assertEquals(vehicle2.getId(), vehiclesWithHistory.get(0).getId());
 	}
 
 	@Test
 	public void testRemovingHistoryEntryDeletesOnlyJoinTableRow() {
 		// 7. Löschen aus der N:M-Collection entfernt nur den Eintrag in der Join-Tabelle, nicht den Shop
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
-		vehicle.getLocationHistory().clear();
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
+		loadedVehicle.getLocationHistory().clear();
 
 		manager.flush();
 		manager.clear();
 
-		Vehicle reloaded = manager.find(Vehicle.class, "1");
+		Vehicle reloaded = manager.find(Vehicle.class, vehicle.getId());
 		assertTrue(reloaded.getLocationHistory().isEmpty());
 
-		Shop originalShop = manager.find(Shop.class, "1");
+		Shop originalShop = manager.find(Shop.class, muenchen.getId());
 		assertNotNull(originalShop, "Shop 'Muenchen' existiert weiterhin in der DB (kein CascadeType.REMOVE)");
 	}
 

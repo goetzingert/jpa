@@ -16,15 +16,22 @@ import org.junit.jupiter.api.Test;
 
 public class TestConnection extends AbstractJPATestCase {
 
+	private VehicleType vehicleType;
+	private Shop shop;
+	private Vehicle vehicle;
+	private User user;
+
 	@Override
 	public void setUp() throws Exception {
-		VehicleType vehicleType = new VehicleType("1", new Model("VW", "Golf"), 120, 200);
+		vehicleType = new VehicleType(new Model("VW", "Golf"), 120, 200);
 		manager.persist(vehicleType);
-		Shop shop = new Shop("1", "Muenchen");
-		Vehicle vehicle = new Vehicle("1", shop, vehicleType);
-
+		shop = new Shop("Muenchen");
+		vehicle = new Vehicle(shop, vehicleType);
+		shop.addVehicle(vehicle);
+		manager.persist(vehicle);
 		manager.persist(shop);
-		manager.persist(new User("1", new Person("1", "Hans", "Mustermann")));
+		user = new User(new Person("Hans", "Mustermann"));
+		manager.persist(user);
 		manager.flush();
 		manager.clear();
 	}
@@ -32,70 +39,70 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testManyToOneVehicleToType() {
 		// 1. Unidirektionale N:1-Navigation von Vehicle zu VehicleType
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
-		assertNotNull(vehicle);
-		assertNotNull(vehicle.getType());
-		assertEquals("Golf", vehicle.getType().getModel().getModell());
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
+		assertNotNull(loadedVehicle);
+		assertNotNull(loadedVehicle.getType());
+		assertEquals("Golf", loadedVehicle.getType().getModel().getModell());
 	}
 
 	@Test
 	public void testManyToOneVehicleToLocation() {
 		// 2. Bidirektionale N:1-Navigation von Vehicle zu Shop
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
-		assertNotNull(vehicle);
-		assertNotNull(vehicle.getLocation());
-		assertEquals("Muenchen", vehicle.getLocation().getLocation());
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
+		assertNotNull(loadedVehicle);
+		assertNotNull(loadedVehicle.getLocation());
+		assertEquals("Muenchen", loadedVehicle.getLocation().getLocation());
 	}
 
 	@Test
 	public void testOneToManyOfShop() {
 		// 3. Inverse 1:N-Navigation von Shop zu den zugeordneten Vehicles
-		Shop shop = manager.find(Shop.class, "1");
-		assertNotNull(shop.getVehicles());
-		assertEquals(1, shop.getVehicles().size());
+		Shop loadedShop = manager.find(Shop.class, shop.getId());
+		assertNotNull(loadedShop.getVehicles());
+		assertEquals(1, loadedShop.getVehicles().size());
 	}
 
 	@Test
 	public void testOwningSidePersistsRelation() {
 		// 4. Owning Side: Setzen des Standorts am Vehicle schreibt den Fremdschlüssel
-		Shop stuttgart = new Shop("2", "Stuttgart");
+		Shop stuttgart = new Shop("Stuttgart");
 		manager.persist(stuttgart);
 
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
 		
 		// TODO: vehicle.setLocation(stuttgart) aufrufen
-		vehicle.setLocation(stuttgart);
+		loadedVehicle.setLocation(stuttgart);
 
 		manager.flush();
 		manager.clear();
 
-		Vehicle reloadedVehicle = manager.find(Vehicle.class, "1");
+		Vehicle reloadedVehicle = manager.find(Vehicle.class, vehicle.getId());
 		assertEquals("Stuttgart", reloadedVehicle.getLocation().getLocation());
 
-		Shop reloadedStuttgart = manager.find(Shop.class, "2");
+		Shop reloadedStuttgart = manager.find(Shop.class, stuttgart.getId());
 		assertEquals(1, reloadedStuttgart.getVehicles().size());
 	}
 
 	@Test
 	public void testDefensiveHelperMethodMaintainsBothSides() {
 		// 5. Defensive Synchronisationsmethode shop.addVehicle() pflegt beide Seiten
-		Shop shop = manager.find(Shop.class, "1");
-		VehicleType type = manager.find(VehicleType.class, "1");
+		Shop loadedShop = manager.find(Shop.class, shop.getId());
+		VehicleType type = manager.find(VehicleType.class, vehicleType.getId());
 
-		Vehicle newVehicle = new Vehicle("2", null, type);
+		Vehicle newVehicle = new Vehicle(null, type);
 		manager.persist(newVehicle);
 
 		// TODO: shop.addVehicle(newVehicle) aufrufen
-		shop.addVehicle(newVehicle);
+		loadedShop.addVehicle(newVehicle);
 
 		// Beide Seiten sind im Speicher synchron
-		assertEquals(shop, newVehicle.getLocation());
-		assertTrue(shop.getVehicles().contains(newVehicle));
+		assertEquals(loadedShop, newVehicle.getLocation());
+		assertTrue(loadedShop.getVehicles().contains(newVehicle));
 
 		manager.flush();
 		manager.clear();
 
-		Vehicle reloaded = manager.find(Vehicle.class, "2");
+		Vehicle reloaded = manager.find(Vehicle.class, newVehicle.getId());
 		assertNotNull(reloaded.getLocation());
 		assertEquals("Muenchen", reloaded.getLocation().getLocation());
 	}
@@ -103,18 +110,18 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testMovingVehicleUpdatesBothShopCollections() {
 		// 6. Umsetzen eines Fahrzeugs aktualisiert die Bestände beider Standorte
-		Shop muenchen = manager.find(Shop.class, "1");
-		Shop berlin = new Shop("3", "Berlin");
+		Shop muenchen = manager.find(Shop.class, shop.getId());
+		Shop berlin = new Shop("Berlin");
 		manager.persist(berlin);
 
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
-		vehicle.setLocation(berlin);
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
+		loadedVehicle.setLocation(berlin);
 
 		manager.flush();
 		manager.clear();
 
-		Shop reloadedMuenchen = manager.find(Shop.class, "1");
-		Shop reloadedBerlin = manager.find(Shop.class, "3");
+		Shop reloadedMuenchen = manager.find(Shop.class, shop.getId());
+		Shop reloadedBerlin = manager.find(Shop.class, berlin.getId());
 
 		assertEquals(0, reloadedMuenchen.getVehicles().size(), "München sollte keine Fahrzeuge mehr haben");
 		assertEquals(1, reloadedBerlin.getVehicles().size(), "Berlin sollte 1 Fahrzeug haben");
@@ -123,13 +130,13 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testRemovingLocationSetsNullForeignKey() {
 		// 7. Lösen des Standorts setzt den Fremdschlüssel auf NULL
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
-		vehicle.setLocation(null);
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
+		loadedVehicle.setLocation(null);
 
 		manager.flush();
 		manager.clear();
 
-		Vehicle reloaded = manager.find(Vehicle.class, "1");
+		Vehicle reloaded = manager.find(Vehicle.class, vehicle.getId());
 		assertNull(reloaded.getLocation());
 	}
 

@@ -1,5 +1,6 @@
 package net.rentacar.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -23,7 +24,7 @@ public class Shop {
 	//TODO mapped-by here
 	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "shop_id")
-	private Set<Vehicle> vehicles;
+	private Set<Vehicle> vehicles = new HashSet<Vehicle>();
 
 	public Shop() {
 	}
@@ -53,8 +54,14 @@ public class Shop {
 		return this.location;
 	}
 
-	public Object getId() {
+	public long getId() {
 		return this.id;
+	}
+
+	public void addVehicle(Vehicle vehicle) {
+		vehicles.add(vehicle);
+		if (!this.equals(vehicle.getLocation()))
+			vehicle.setLocation(this);
 	}
 
 }

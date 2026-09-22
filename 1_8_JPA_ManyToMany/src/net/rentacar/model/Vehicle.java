@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -17,7 +18,8 @@ import jakarta.persistence.Table;
 public class Vehicle {
 
 	@Id
-	private String id;
+	@GeneratedValue
+	private long id;
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private VehicleType type;
 	@ManyToOne(cascade = CascadeType.PERSIST)
@@ -29,18 +31,13 @@ public class Vehicle {
 	public Vehicle() {
 	}
 
-	public Vehicle(String id, Shop location, VehicleType type) {
-		this.id = id;
+	public Vehicle(Shop location, VehicleType type) {
 		setLocation(location);
 		this.type = type;
 	}
 
-	public String getId() {
+	public long getId() {
 		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public void setType(VehicleType type) {
