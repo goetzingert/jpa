@@ -17,6 +17,20 @@ public class Person {
 	@Column(length = 60)
 	private String lastName;
 
+	public Person() {
+		super();
+	}
+
+	public Person(String firstName, String lastName) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
+
+	public long getId() {
+		return id;
+	}
+
 	public String getFirstName() {
 		return firstName;
 	}

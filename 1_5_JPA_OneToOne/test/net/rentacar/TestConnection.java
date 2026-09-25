@@ -14,11 +14,18 @@ import org.junit.jupiter.api.Test;
 
 public class TestConnection extends AbstractJPATestCase {
 
+	private VehicleType vehicleType;
+	private Shop shop;
+	private User user;
+
 	@Override
 	public void setUp() throws Exception {
-		manager.persist(new VehicleType("1", new Model("VW", "Golf"), 120, 200));
-		manager.persist(new Shop("1", "Muenchen"));
-		manager.persist(new User("1", new Person("1", "Hans", "Mustermann")));
+		vehicleType = new VehicleType(new Model("VW", "Golf"), 120, 200);
+		manager.persist(vehicleType);
+		shop = new Shop("Muenchen");
+		manager.persist(shop);
+		user = new User(new Person("Hans", "Mustermann"));
+		manager.persist(user);
 		manager.flush();
 		manager.clear();
 	}
@@ -26,24 +33,25 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testFindVehicle() {
 		// 1. Laden des Fahrzeugtyps
-		assertNotNull(manager.find(VehicleType.class, "1").getId());
+		assertNotNull(manager.find(VehicleType.class, vehicleType.getId()).getId());
 	}
 
 	@Test
 	public void testFindUserAndNavigateToPerson() {
 		// 2. Laden von User und Navigation über 1:1 zu Person
-		User user = manager.find(User.class, "1");
-		assertNotNull(user);
+		User loadedUser = manager.find(User.class, user.getId());
+		assertNotNull(loadedUser);
 		// TODO: Prüfen, dass getPerson() nicht null ist und die Attribute "Hans" und "Mustermann" stimmen
-		assertNotNull(user.getPerson());
-		assertEquals("Hans", user.getPerson().getFirstName());
-		assertEquals("Mustermann", user.getPerson().getLastName());
+		assertNotNull(loadedUser.getPerson());
+		assertEquals("Hans", loadedUser.getPerson().getFirstName());
+		assertEquals("Mustermann", loadedUser.getPerson().getLastName());
 	}
 
 	@Test
 	public void testCascadePersistPropagatesToPerson() {
 		// 3. CascadeType.PERSIST: Persistieren des Users speichert die neue Person automatisch mit
-		User newUser = new User("2", new Person("2", "Erika", "Musterfrau"));
+		Person newPerson = new Person("Erika", "Musterfrau");
+		User newUser = new User(newPerson);
 		
 		// TODO: manager.persist(newUser) aufrufen (ohne separates persist(person))
 		manager.persist(newUser);
@@ -51,7 +59,7 @@ public class TestConnection extends AbstractJPATestCase {
 		manager.flush();
 		manager.clear();
 
-		Person loadedPerson = manager.find(Person.class, "2");
+		Person loadedPerson = manager.find(Person.class, newPerson.getId());
 		assertNotNull(loadedPerson, "Person sollte durch Kaskadierung in der DB persistiert worden sein");
 		assertEquals("Erika", loadedPerson.getFirstName());
 	}
@@ -59,13 +67,13 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testUpdatingPersonThroughManagedUserPropagatesOnFlush() {
 		// 4. Dirty Checking über die 1:1-Beziehung
-		User user = manager.find(User.class, "1");
+		User loadedUser = manager.find(User.class, user.getId());
 		// TODO: FirstName der Person auf "Maximilian" ändern
 
 		manager.flush();
 		manager.clear();
 
-		Person reloadedPerson = manager.find(Person.class, "1");
+		Person reloadedPerson = manager.find(Person.class, user.getPerson().getId());
 		assertNotNull(reloadedPerson);
 		assertEquals("Maximilian", reloadedPerson.getFirstName());
 	}
@@ -73,20 +81,22 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testRemovingUserDoesNotRemovePersonWithoutCascadeRemove() {
 		// 5. Löschen des Users ohne CascadeType.REMOVE lässt die Person in der DB intakt
-		User user = manager.find(User.class, "1");
-		manager.remove(user);
+		long personId = user.getPerson().getId();
+		long userId = user.getId();
+		User loadedUser = manager.find(User.class, userId);
+		manager.remove(loadedUser);
 
 		manager.flush();
 		manager.clear();
 
-		assertNull(manager.find(User.class, "1"));
-		assertNotNull(manager.find(Person.class, "1"), "Person existiert weiterhin eigenständig");
+		assertNull(manager.find(User.class, userId));
+		assertNotNull(manager.find(Person.class, personId), "Person existiert weiterhin eigenständig");
 	}
 
 	@Test
 	public void testFindNonExistingUserReturnsNull() {
 		// 6. Randfall: Nicht vorhandener User
-		assertNull(manager.find(User.class, "999"));
+		assertNull(manager.find(User.class, 999L));
 	}
 
 }

@@ -44,4 +44,8 @@ public class Vehicle {
 	public Shop getLocation() {
 		return location;
 	}
+
+	public long getId() {
+		return this.id;
+	}
 }

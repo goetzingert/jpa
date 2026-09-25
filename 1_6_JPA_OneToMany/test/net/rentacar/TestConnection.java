@@ -19,18 +19,24 @@ import org.junit.jupiter.api.Test;
 
 public class TestConnection extends AbstractJPATestCase {
 
+	private VehicleType vehicleType;
+	private Shop shop;
+	private Vehicle vehicle;
+	private User user;
+
 	@Override
 	public void setUp() throws Exception {
-		VehicleType vehicleType = new VehicleType("1", new Model("VW", "Golf"), 120, 200);
+		vehicleType = new VehicleType(new Model("VW", "Golf"), 120, 200);
 		manager.persist(vehicleType);
-		Shop shop = new Shop("1", "Muenchen");
+		shop = new Shop("Muenchen");
 		Set<Vehicle> vehicles = new HashSet<Vehicle>();
-		Vehicle vehicle = new Vehicle("1", shop, vehicleType);
+		vehicle = new Vehicle(shop, vehicleType);
 		vehicles.add(vehicle);
 		shop.setVehicles(vehicles);
 		manager.persist(vehicle);
 		manager.persist(shop);
-		manager.persist(new User("1", new Person("1", "Hans", "Mustermann")));
+		user = new User(new Person("Hans", "Mustermann"));
+		manager.persist(user);
 		manager.flush();
 		manager.clear();
 	}
@@ -38,68 +44,68 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testFindShop() {
 		// 1. Laden des Shops
-		Shop shop = manager.find(Shop.class, "1");
-		assertNotNull(shop);
-		assertEquals("Muenchen", shop.getLocation());
+		Shop loadedShop = manager.find(Shop.class, shop.getId());
+		assertNotNull(loadedShop);
+		assertEquals("Muenchen", loadedShop.getLocation());
 	}
 
 	@Test
 	public void testOneToManyOfShop() {
 		// 2. 1:N-Collection laden und prüfen
-		Shop shop = manager.find(Shop.class, "1");
+		Shop loadedShop = manager.find(Shop.class, shop.getId());
 		// TODO: Prüfen, dass shop.getVehicles() nicht null ist und 1 Element enthält
-		assertNotNull(shop.getVehicles());
-		assertEquals(1, shop.getVehicles().size());
+		assertNotNull(loadedShop.getVehicles());
+		assertEquals(1, loadedShop.getVehicles().size());
 	}
 
 	@Test
 	public void testAddingVehicleToShopCollection() {
 		// 3. Weiteres Fahrzeug zur Collection hinzufügen
-		Shop shop = manager.find(Shop.class, "1");
-		VehicleType vehicleType = manager.find(VehicleType.class, "1");
+		Shop loadedShop = manager.find(Shop.class, shop.getId());
+		VehicleType loadedVehicleType = manager.find(VehicleType.class, vehicleType.getId());
 
-		Vehicle vehicle2 = new Vehicle("2", shop, vehicleType);
+		Vehicle vehicle2 = new Vehicle(loadedShop, loadedVehicleType);
 		manager.persist(vehicle2);
 		
 		// TODO: vehicle2 zu shop.getVehicles() hinzufügen
-		shop.getVehicles().add(vehicle2);
+		loadedShop.getVehicles().add(vehicle2);
 
 		manager.flush();
 		manager.clear();
 
-		Shop reloadedShop = manager.find(Shop.class, "1");
+		Shop reloadedShop = manager.find(Shop.class, shop.getId());
 		assertEquals(2, reloadedShop.getVehicles().size());
 	}
 
 	@Test
 	public void testRemovingVehicleFromShopCollectionSetsForeignKeyToNull() {
 		// 4. Entfernen aus der 1:N-Collection (ohne orphanRemoval) entkoppelt die Beziehung
-		Shop shop = manager.find(Shop.class, "1");
+		Shop loadedShop = manager.find(Shop.class, shop.getId());
 		
 		// TODO: shop.getVehicles().clear() aufrufen
-		shop.getVehicles().clear();
+		loadedShop.getVehicles().clear();
 
 		manager.flush();
 		manager.clear();
 
-		Shop reloadedShop = manager.find(Shop.class, "1");
+		Shop reloadedShop = manager.find(Shop.class, shop.getId());
 		assertEquals(0, reloadedShop.getVehicles().size(), "Shop hat keine Fahrzeuge mehr");
 
 		// Das Fahrzeug existiert weiterhin in der DB
-		Vehicle vehicle = manager.find(Vehicle.class, "1");
-		assertNotNull(vehicle, "Fahrzeug existiert weiterhin unabhängig vom Shop");
+		Vehicle loadedVehicle = manager.find(Vehicle.class, vehicle.getId());
+		assertNotNull(loadedVehicle, "Fahrzeug existiert weiterhin unabhängig vom Shop");
 	}
 
 	@Test
 	public void testEmptyShopReturnsEmptyCollectionNotNull() {
 		// 5. Neuer Shop ohne Fahrzeuge liefert leere Collection, niemals null
-		Shop emptyShop = new Shop("2", "Berlin");
+		Shop emptyShop = new Shop("Berlin");
 		manager.persist(emptyShop);
 
 		manager.flush();
 		manager.clear();
 
-		Shop loaded = manager.find(Shop.class, "2");
+		Shop loaded = manager.find(Shop.class, emptyShop.getId());
 		assertNotNull(loaded.getVehicles());
 		assertTrue(loaded.getVehicles().isEmpty());
 	}
@@ -107,13 +113,13 @@ public class TestConnection extends AbstractJPATestCase {
 	@Test
 	public void testShopLocationUpdatePropagatesOnFlush() {
 		// 6. Dirty Checking auf Shop-Attributen
-		Shop shop = manager.find(Shop.class, "1");
-		shop.setLocation("Muenchen-Zentrum");
+		Shop loadedShop = manager.find(Shop.class, shop.getId());
+		loadedShop.setLocation("Muenchen-Zentrum");
 
 		manager.flush();
 		manager.clear();
 
-		Shop reloaded = manager.find(Shop.class, "1");
+		Shop reloaded = manager.find(Shop.class, shop.getId());
 		assertEquals("Muenchen-Zentrum", reloaded.getLocation());
 	}
 

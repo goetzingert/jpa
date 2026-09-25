@@ -49,7 +49,7 @@ public class Shop {
 		return this.location;
 	}
 
-	public Object getId() {
+	public long getId() {
 		return this.id;
 	}
 

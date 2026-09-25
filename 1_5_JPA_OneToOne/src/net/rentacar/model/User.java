@@ -28,6 +28,14 @@ public class User implements Serializable {
 		super();
 	}
 
+	public User(Person person) {
+		this.person = person;
+	}
+
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+
 	public User( String firstName, String lastName) {
 		this.person = new Person();
 		this.person.setFirstName(firstName);
